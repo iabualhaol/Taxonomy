@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <title>Taxonomy | Load a simple taxonomy</title>
+
+  <script type="text/javascript" src="lib/vis.js"></script>
+  <link href="css/vis.css" rel="stylesheet" type="text/css" />
+  <script type='text/javascript' src='lib/jquery-1.7.2.js'></script> 
+
+  <style type="text/css">
+    #graph {
+      width: 600px;
+      height: 400px;
+      border: 1px solid lightgray;
+    }
+  </style>
+</head>
+<body>
+
+<p>
+  Load a simple taxonomy.
+</p>
+
+<div id="graph"></div>
+
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([]);
+  $.getJSON("http://localhost:8080/nodes", function(data) {
+    nodes.update(data); 
+    network.fit(); 
+  });
+
+  // create an array with edges
+  var edges = new vis.DataSet([]);
+  $.getJSON("http://localhost:8080/edges", function(data) {
+    edges.update(data);  
+    network.fit();
+  });
+
+  // create a network
+  var container = document.getElementById('graph');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+</script>
+
+</body>
+</html>
