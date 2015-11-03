@@ -11,6 +11,7 @@ type Edge struct {
 	Id string `json:"id"`
 	From string `json:"from"`
 	To string `json:"to"`
+	Arrows string `json:"arrows"`
 	Label string `json:"label"`
 }
 
