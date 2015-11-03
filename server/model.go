@@ -1,5 +1,14 @@
 package main
 
+type Evidence struct {
+  Id string `json:"id"`
+	Vote int `json:"vote"`
+	Author string `json:"author"`
+	Reason string `json:"reason"`
+}
+
+type Evidences []Evidence
+
 type Node struct {
 	Id string `json:"id"`
 	Label string `json:"label"`

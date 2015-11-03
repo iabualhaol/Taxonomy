@@ -49,3 +49,15 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 	fmt.Fprintln(w, "Edge:", id)
 }
+
+func EvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
+	evidences := Evidences {
+		Evidence { Id: "1", Vote: 5, Author: "Michael", 
+			Reason: "Links machine learning and code reuse" },
+		Evidence { Id: "2", Vote: 1, Author: "Ibrahim",
+			Reason: "The concept is misleading" },
+	}
+	if err := json.NewEncoder(w).Encode(evidences); err != nil {
+		panic(err)
+	}
+}
