@@ -3,6 +3,7 @@ package main
 import "fmt"
 import "net/http"
 import "encoding/json"
+import "strconv"
 import "github.com/gorilla/mux"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -51,13 +52,27 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
-	evidences := Evidences {
-		Evidence { Id: "1", Vote: 5, Author: "Michael", 
-			Reason: "Links machine learning and code reuse" },
-		Evidence { Id: "2", Vote: 1, Author: "Ibrahim",
-			Reason: "The concept is misleading" },
-	}
-	if err := json.NewEncoder(w).Encode(evidences); err != nil {
-		panic(err)
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	if (id % 2 == 0) {
+		evidences := Evidences {
+			Evidence { Id: "1", Vote: 5, Author: "Michael", 
+		  	Reason: "Links machine learning and code reuse" },
+			Evidence { Id: "2", Vote: 1, Author: "Ibrahim",
+				Reason: "The concept is misleading" },
+		}
+		if err := json.NewEncoder(w).Encode(evidences); err != nil {
+			panic(err)
+		}
+	} else {
+		evidences := Evidences {
+			Evidence { Id: "3", Vote: 3, Author: "Michael", 
+		  	Reason: "Great article" },
+			Evidence { Id: "4", Vote: 1, Author: "Ibrahim",
+				Reason: "The concept is also misleading" },
+		}
+		if err := json.NewEncoder(w).Encode(evidences); err != nil {
+			panic(err)
+		}
 	}
 }

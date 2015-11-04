@@ -61,11 +61,17 @@
   network.on("click", showEvidence);
 
   function showEvidence(params) {
-    $.getJSON("http://localhost:8080/nodes/1/evidences", 
-      function(data) {
-        document.getElementById("evidence").innerHTML = 
-          "<h2>Evidence</h2>" + JSON.stringify(data, null, 4);
+    if (params.nodes.length > 0) {
+      console.log("clicked on a node: " + params.nodes[0]);
+      $.getJSON("http://localhost:8080/nodes/" + params.nodes[0] + "/evidences", 
+        function(data) {
+          document.getElementById("evidence").innerHTML = 
+            "<h2>Evidence</h2>" + JSON.stringify(data, null, 4);
       });
+    } else if (params.edges.length > 0) {
+      console.log("clicked on an edge: " + params.edges[0]);
+
+    }
   }
 </script>
 
