@@ -1,13 +1,13 @@
 package main
 
-type Evidence struct {
+type EvidenceItem struct {
   Id string `json:"id"`
 	Vote int `json:"vote"`
 	Author string `json:"author"`
 	Reason string `json:"reason"`
 }
 
-type Evidences []Evidence
+type EvidenceItems []EvidenceItem
 
 type Node struct {
 	Id string `json:"id"`

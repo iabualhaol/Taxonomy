@@ -63,7 +63,7 @@
   function showEvidence(params) {
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
-      $.getJSON("http://localhost:8080/nodes/" + params.nodes[0] + "/evidences", 
+      $.getJSON("http://localhost:8080/nodes/" + params.nodes[0] + "/evidence", 
         function(data) {
           document.getElementById("evidence").innerHTML = 
             "<h2>Evidence</h2>" + JSON.stringify(data, null, 4);

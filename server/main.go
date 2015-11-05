@@ -11,7 +11,7 @@ func main() {
 	router.HandleFunc("/nodes/{id}", NodeViewHandler)
 	router.HandleFunc("/edges", EdgeIndexHandler)
 	router.HandleFunc("/edges/{id}", EdgeViewHandler)
-	router.HandleFunc("/nodes/{id}/evidences", EvidenceIndexHandler)
+	router.HandleFunc("/nodes/{id}/evidence", NodeEvidenceIndexHandler)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
