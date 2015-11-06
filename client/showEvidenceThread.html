@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <title>Taxonomy | Load a simple taxonomy</title>
+
+  <script type="text/javascript" src="lib/vis.js"></script>
+  <link href="css/vis.css" rel="stylesheet" type="text/css" />
+
+  <script type='text/javascript' src='lib/jquery-1.7.2.js'></script> 
+  <script type='text/javascript' src='lib/knockout-3.2.0.js'></script> 
+
+  <style type="text/css">
+    #graph {
+      width: 600px;
+      height: 400px;
+      border: 1px solid;
+    }
+
+    #evidence {
+      width: 300px;
+      height: 400px;
+      border: 1px solid;
+    }
+
+    table.tecspec {
+      width: 100%;
+      max-width: 100%;
+      border-bottom: 1px solid #dddddd;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Taxonomy with evidence</h1>
+
+<p>Shows evidence for a concept when user clicks on concept.</p>
+
+<table>
+<tr>
+<td><div id="graph"></div></td>
+<td>
+<div id="evidence">
+<table data-bind="foreach: evidence" width="300px" class="tecspec">
+<tr>
+  <td data-bind="text: vote" valign="top"></td>
+  <td valign="top"><span data-bind="text: author"></span>: <span data-bind="text: reason"></span></td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+
+<script type="text/javascript">
+  function EvidenceViewModel() {
+    var self = this;
+    self.evidence = ko.observableArray([]);
+  }
+
+  var view = new EvidenceViewModel();
+  ko.applyBindings(view);
+
+  // create an array with nodes
+  var nodes = new vis.DataSet([]);
+  $.getJSON("http://localhost:8080/nodes", function(data) {
+    nodes.update(data); 
+    network.fit(); 
+  });
+
+  // create an array with edges
+  var edges = new vis.DataSet([]);
+  $.getJSON("http://localhost:8080/edges", function(data) {
+    edges.update(data);  
+    network.fit();
+  });
+
+  // create a network
+  var container = document.getElementById('graph');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+
+  network.on("click", showEvidence);
+
+  function showEvidence(params) {
+    if (params.nodes.length > 0) {
+      console.log("clicked on a node: " + params.nodes[0]);
+      $.getJSON("http://localhost:8080/nodes/" + params.nodes[0] + "/evidence", 
+        function(data) {
+          view.evidence(data);
+        });
+    } else if (params.edges.length > 0) {
+      console.log("clicked on an edge: " + params.edges[0]);
+    }
+  }
+</script>
+
+</body>
+</html>
