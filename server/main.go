@@ -11,6 +11,8 @@ func main() {
 	router.HandleFunc("/nodes/{id}", NodeViewHandler)
 	router.HandleFunc("/edges", EdgeIndexHandler)
 	router.HandleFunc("/edges/{id}", EdgeViewHandler)
+	router.HandleFunc("/nodes/{id}/evidence", NodeCreateEvidenceHandler).
+		Methods("POST")
 	router.HandleFunc("/nodes/{id}/evidence", NodeEvidenceIndexHandler)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

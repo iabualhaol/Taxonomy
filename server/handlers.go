@@ -4,6 +4,8 @@ import "fmt"
 import "net/http"
 import "encoding/json"
 import "strconv"
+// import "io"
+// import "io/ioutil"
 import "github.com/gorilla/mux"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,6 +54,7 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func NodeEvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("node evidence index")
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 	if (id % 2 == 0) {
@@ -75,4 +78,24 @@ func NodeEvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 	}
+}
+
+func NodeCreateEvidenceHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("node create evidence")
+	vars := mux.Vars(r)
+	id := vars["id"]
+	reason := vars["reason"]
+	fmt.Println("Evidence for node:", id)
+	fmt.Println("Reason:", reason)
+
+	/*
+	var evidenceItem EvidenceItem
+	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1024*1024))
+	fmt.Println("Body:", body)
+	if err != nil { panic(err) }
+	if err := r.Body.Close(); err != nil { panic(err) }
+	if err := json.Unmarshal(body, &evidenceItem); err != nil {
+		fmt.Println("Reason:", evidenceItem.Reason)
+	}
+	*/
 }

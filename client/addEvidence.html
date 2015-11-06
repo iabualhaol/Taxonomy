@@ -17,15 +17,19 @@
     }
 
     #evidence {
+      background-color: #32CD32;
       width: 300px;
       height: 400px;
       border: 1px solid;
     }
 
-    table.tecspec {
-      width: 100%;
-      max-width: 100%;
-      border-bottom: 1px solid #dddddd;
+    .comment {
+      background-color: gray;
+      width: 250px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
 
     textarea {
@@ -43,17 +47,17 @@
 <tr>
 <td><div id="graph"></div></td>
 <td>
-<div id="evidence">
-<table data-bind="foreach: evidence" width="300px" class="tecspec">
-<tr>
-  <td data-bind="text: vote" valign="top"></td>
-  <td valign="top"><span data-bind="text: author"></span>: <span data-bind="text: reason"></span></td>
-</tr>
-</table>
+<div id="evidence" data-bind="foreach: evidence" width="300px">
+<div class="comment">
+  (<span data-bind="text: vote"></span>)
+  <span data-bind="text: author"></span>: <span data-bind="text: reason"></span>
+</div>
+</div>
+<form>
 <table width="300px" data-bind="if: evidence().length > 0">
 <tr>
 <td valign="top">
-<select name="vote">
+<select data-bind="value: vote">
 <option>?</option>
 <option>1</option>
 <option>2</option>
@@ -63,13 +67,14 @@
 </select>
 </td>
 <td valign="top">
-<input type="text" name="reason" style="width: 240px"/>
+<input type="text" style="width: 240px" data-bind="value: reason"/>
 </td>
 </tr>
 <tr>
-<td></td><td><button onClick="">Add</button></td>
+<td></td><td><button data-bind="click: createNodeEvidence">Add</button></td>
 </tr>
 </table>
+</form>
 </div>
 </td>
 </tr>
@@ -79,6 +84,15 @@
   function EvidenceViewModel() {
     var self = this;
     self.evidence = ko.observableArray([]);
+    self.vote = ko.observable("?");
+    self.reason = ko.observable("");
+    self.createNodeEvidence = function() {
+      $.post("http://localhost:8080/nodes/" + selectedNode + "/evidence",
+        { vote: self.vote, reason: self.reason }, function(data) {
+        self.vote("?");
+        self.reason("");
+      }, "json");
+    }
   }
 
   var view = new EvidenceViewModel();
@@ -110,17 +124,22 @@
   network.on("click", showEvidence);
   network.on("dragStart", showEvidence);
 
+  var currentNode = "";
+
   function showEvidence(params) {
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
-      $.getJSON("http://localhost:8080/nodes/" + params.nodes[0] + "/evidence", 
+      selectedNode = params.nodes[0]
+      $.getJSON("http://localhost:8080/nodes/" + selectedNode + "/evidence", 
         function(data) {
           view.evidence(data);
         });
     } else if (params.edges.length > 0) {
       console.log("clicked on an edge: " + params.edges[0]);
+      selectedNode = "";
       view.evidence([]);
     } else {
+      selectedNode = "";
       view.evidence([]);
     }
   }
