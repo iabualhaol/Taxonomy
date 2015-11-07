@@ -42,26 +42,19 @@
   <div class="row">
     <div class="col-sm-7 bootcards">
       <div class="panel panel-default">
-        <div id="graph">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title pull-left">Taxonomy</h3>
         </div>
+        <div id="graph"></div>
       </div>
     </div>
     <div class="col-sm-5 bootcards-list">
       <div class="panel panel-default">
-        <div class="panel-body">
-          <form>
-            <div class="row">
-              <div class="col-xs-9">
-                <h4 class="panel-title">Evidence</h4>
-              </div>
-              <div class="col-xs-3">
-                <a class="btn btn-primary btn-block" href="#">
-                  <i class="fa fa-plus"></i>
-                  Add
-                </a>
-              </div>
-            </div>
-          </form>
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title pull-left">Evidence</h3>
+          <a class="btn btn-primary pull-right" href="#">
+            <i class="fa fa-plus"></i>Add
+          </a>
         </div>
         <div class="list-group" data-bind="foreach: evidence">
           <div class="list-group-item" href="#">
@@ -69,7 +62,7 @@
             <h4 class="list-group-item-heading" data-bind="text: vote"></h4>
             <p class="list-group-item-text" data-bind="text: reason"></p>
           </div>
-        </div>
+        </div> <!-- list-group -->
       </div>
     </div>
   </div>
