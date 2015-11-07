@@ -84,18 +84,9 @@ func NodeCreateEvidenceHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("node create evidence")
 	vars := mux.Vars(r)
 	id := vars["id"]
-	reason := vars["reason"]
 	fmt.Println("Evidence for node:", id)
+	vote := r.FormValue("vote")
+	reason := r.FormValue("reason")
+	fmt.Println("Vote:", vote)
 	fmt.Println("Reason:", reason)
-
-	/*
-	var evidenceItem EvidenceItem
-	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1024*1024))
-	fmt.Println("Body:", body)
-	if err != nil { panic(err) }
-	if err := r.Body.Close(); err != nil { panic(err) }
-	if err := json.Unmarshal(body, &evidenceItem); err != nil {
-		fmt.Println("Reason:", evidenceItem.Reason)
-	}
-	*/
 }

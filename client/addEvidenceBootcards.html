@@ -6,14 +6,20 @@
   <link href="css/vis.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="lib/vis.js"></script>
 
-  <script type='text/javascript' src='lib/jquery-1.7.2.js'></script> 
+  <script type='text/javascript' src='lib/jquery-1.11.3.min.js'></script> 
   <script type='text/javascript' src='lib/knockout-3.2.0.js'></script> 
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script type="text/javascript" src="lib/bootstrap.min.js"></script>
+
+  <link href="css/font-awesome.css" rel="stylesheet">
+
+  <link href="css/bootcards-desktop.min.css" rel="stylesheet">
+  <script type="text/javascript" src="lib/bootcards.min.js"></script>
 
   <style type="text/css">
     #graph {
-      width: 600px;
       height: 400px;
-      border: 1px solid;
     }
 
     #evidence {
@@ -22,39 +28,55 @@
       height: 400px;
       border: 1px solid;
     }
-
-    .comment {
-      background-color: lightgray;
-      width: 250px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      padding: 5px;
-    }
-
-    textarea {
-      font-size: 110%;
-    }
   </style>
 </head>
 <body>
 
-<h1>Taxonomy with evidence</h1>
-
-<p>Shows evidence for a concept when user clicks on concept.</p>
-
-<table>
-<tr>
-<td><div id="graph"></div></td>
-<td>
-<div id="evidence">
-<div data-bind="foreach: evidence" width="300px">
-  <div class="comment">
-    (<span data-bind="text: vote"></span>)
-    <span data-bind="text: author"></span>: <span data-bind="text: reason"></span>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>Taxonomy with evidence</h1>
+      <p>Shows evidence for a concept when user clicks on concept.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-7 bootcards">
+      <div class="panel panel-default">
+        <div id="graph">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-5 bootcards-list">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form>
+            <div class="row">
+              <div class="col-xs-9">
+                <h4 class="panel-title">Evidence</h4>
+              </div>
+              <div class="col-xs-3">
+                <a class="btn btn-primary btn-block" href="#">
+                  <i class="fa fa-plus"></i>
+                  Add
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="list-group" data-bind="foreach: evidence">
+          <div class="list-group-item" href="#">
+            <img src="images/michael.jpg" class="img-rounded pull-left"/>
+            <h4 class="list-group-item-heading" data-bind="text: vote"></h4>
+            <p class="list-group-item-text" data-bind="text: reason"></p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!--
+<div>
 <form>
   <select data-bind="value: vote">
   <option>?</option>
@@ -68,6 +90,7 @@
   <button data-bind="click: createNodeEvidence">Add</button>
 </form>
 </div>
+-->
 
 <script type="text/javascript">
   function EvidenceViewModel() {
@@ -75,6 +98,7 @@
     self.evidence = ko.observableArray([]);
     self.vote = ko.observable("?");
     self.reason = ko.observable("");
+
     self.createNodeEvidence = function() {
       $.post("http://localhost:8080/nodes/" + selectedNode + "/evidence",
         { vote: self.vote, reason: self.reason }, function(data) {
