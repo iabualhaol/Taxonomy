@@ -4,8 +4,6 @@ import "fmt"
 import "net/http"
 import "encoding/json"
 import "strconv"
-// import "io"
-// import "io/ioutil"
 import "github.com/gorilla/mux"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -89,4 +87,5 @@ func NodeCreateEvidenceHandler(w http.ResponseWriter, r *http.Request) {
 	reason := r.FormValue("reason")
 	fmt.Println("Vote:", vote)
 	fmt.Println("Reason:", reason)
+	fmt.Fprintln(w, "Evidence created")
 }
