@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+<head>
+  <title>Taxonomy-Venus CyberSecurity</title>
+
+  <style type="text/css">
+    body, select {
+      font: 10pt sans;
+    }
+    #mynetwork {
+      position:relative;
+      width: 600px;
+      height: 600px;
+      border: 1px solid lightgray;
+    }
+    table.legend_table {
+      font-size: 11px;
+      border-width:1px;
+      border-color:#d3d3d3;
+      border-style:solid;
+    }
+    table.legend_table,td {
+      border-width:1px;
+      border-color:#d3d3d3;
+      border-style:solid;
+      padding: 2px;
+    }
+    div.table_content {
+      width:80px;
+      text-align:center;
+    }
+    div.table_description {
+      width:100px;
+    }
+
+    #operation {
+      font-size:28px;
+    }
+    #network-popUp {
+      display:none;
+      position:absolute;
+      top:350px;
+      left:170px;
+      z-index:299;
+      width:250px;
+      height:120px;
+      background-color: #f9f9f9;
+      border-style:solid;
+      border-width:3px;
+      border-color: #5394ed;
+      padding:10px;
+      text-align: center;
+    }
+  </style>
+  <script type="text/javascript" src="js/exampleUtil.js"></script>
+  <script type="text/javascript" src="js/TaxHelper.js"></script>
+  <script type="text/javascript" src="js/vis.js"></script>
+  <link href="css/vis.css" rel="stylesheet" type="text/css" />
+
+  <script type="text/javascript">
+    var nodes = null;
+    var edges = null;
+    var network = null;
+    // randomly create some nodes and edges
+    // var data = getScaleFreeNetwork(25);
+
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+    {id: 1, label: 'Machine Learning',color: {background:'#F03967', border:'#713E7F',highlight:{background:'green',border:'black'}}},
+    {id: 2, label: 'Supervised'},
+    {id: 3, label: 'Unsupervised'},
+    {id: 4, label: '----'},
+    {id: 5, label: 'Classification'},
+    {id: 6, label: ' Regression'},
+    {id: 7, label: ' -----'}
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+    {from: 1, to: 2, color:{opacity:0.3}},
+    {from: 1, to: 3},
+    {from: 1, to: 4},
+    {from: 2, to: 5, color:{color:'red'}},
+    {from: 2, to: 6, color:{color:'#ff0000', opacity:4}},
+    {from: 6, to: 7}
+  ]);
+
+  var data = {
+    nodes: nodes,
+   edges: edges
+  };
+
+
+    var seed = 2;
+
+
+    function destroy() {
+      if (network !== null) {
+        network.destroy();
+        network = null;
+      }
+    }
+
+    function draw() {
+      destroy();
+      nodes = [];
+      edges = [];
+
+      // create a network
+      var container = document.getElementById('mynetwork');
+      
+var options = {
+                layout: {
+                    hierarchical: {
+                        direction: "UD"
+                    }
+                },
+            
+            locale: document.getElementById('locale').value,
+        manipulation: {
+          addNode: function (data, callback) {
+            // filling in the popup DOM elements
+            document.getElementById('operation').innerHTML = "Add Node";
+            document.getElementById('node-id').value = data.id;
+            document.getElementById('node-label').value = data.label;
+            document.getElementById('saveButton').onclick = saveData.bind(this, data, callback);
+            document.getElementById('cancelButton').onclick = clearPopUp.bind();
+            document.getElementById('network-popUp').style.display = 'block';
+          },
+          editNode: function (data, callback) {
+            // filling in the popup DOM elements
+            document.getElementById('operation').innerHTML = "Edit Node";
+            document.getElementById('node-id').value = data.id;
+            document.getElementById('node-label').value = data.label;
+            document.getElementById('saveButton').onclick = saveData.bind(this, data, callback);
+            document.getElementById('cancelButton').onclick = cancelEdit.bind(this,callback);
+            document.getElementById('network-popUp').style.display = 'block';
+          },
+          addEdge: function (data, callback) {
+            if (data.from == data.to) {
+              var r = confirm("Do you want to connect the node to itself?");
+              if (r == true) {
+                callback(data);
+              }
+            }
+            else {
+              callback(data);
+            }
+          }
+        }
+      };
+      network = new vis.Network(container, data, options);
+    }
+
+    function clearPopUp() {
+      document.getElementById('saveButton').onclick = null;
+      document.getElementById('cancelButton').onclick = null;
+      document.getElementById('network-popUp').style.display = 'none';
+    }
+
+    function cancelEdit(callback) {
+      clearPopUp();
+      callback(null);
+    }
+
+    function saveData(data,callback) {
+      data.id = document.getElementById('node-id').value;
+      data.label = document.getElementById('node-label').value;
+      clearPopUp();
+      callback(data);
+    }
+
+  </script>
+  <script src="js/googleAnalytics.js"></script>
+</head>
+
+<body onload="draw();">
+<h1>Editing the nodes and edges in your Taxononmy</h1>
+<p style="width: 700px; font-size:20px; text-align: justify;">
+ You can create your taxonomy by adding Nodes and Edges and commenting on others and add evidences
+</p>
+
+
+<p>
+  <label for="locale">Select the language</label>
+  <select id="locale" onchange="draw();">
+    <option value="en" selected>en</option>
+   <!-- <option value="nl">nl</option> -->
+  </select>
+</p>
+
+<div id="network-popUp">
+  <span id="operation">node</span> <br>
+  <table style="margin:auto;"><tr>
+    <td>id</td><td><input id="node-id" value="new value" /></td>
+  </tr>
+    <tr>
+      <td>label</td><td><input id="node-label" value="new value" /></td>
+    </tr></table>
+  <input type="button" value="save" id="saveButton" />
+  <input type="button" value="cancel" id="cancelButton" />
+</div>
+<br />
+<div id="mynetwork"></div>
+
+</body>
+</html>
+
