@@ -4,7 +4,7 @@ import "log"
 import "net/http"
 import "github.com/gorilla/mux"
 
-func main() {
+func InitRouter() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", IndexHandler)
 	router.HandleFunc("/nodes", NodeIndexHandler)
@@ -17,3 +17,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
+func main() {
+	InitData()
+  InitRouter()
+}

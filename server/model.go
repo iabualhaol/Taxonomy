@@ -2,6 +2,7 @@ package main
 
 type EvidenceItem struct {
   Id string `json:"id"`
+	NodeId string `json:"nodeid"`
 	Vote int `json:"vote"`
 	Author string `json:"author"`
 	Reason string `json:"reason"`

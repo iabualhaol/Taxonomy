@@ -52,40 +52,27 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func NodeEvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("node evidence index")
+	var items EvidenceItems
 	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-	if (id % 2 == 0) {
-		evidence := EvidenceItems {
-			EvidenceItem { Id: "1", Vote: 5, Author: "Michael", 
-		  	Reason: "Links machine learning and code reuse" },
-			EvidenceItem { Id: "2", Vote: 1, Author: "Ibrahim",
-				Reason: "The concept is misleading" },
-		}
-		if err := json.NewEncoder(w).Encode(evidence); err != nil {
-			panic(err)
-		}
+	nodeId := vars["id"]
+	e := GetEvidence(nodeId)
+	// GetEvidence returns a zero value struct if there is no evidence
+	if (e.Id == "") { 
+		fmt.Println("No evidence for node: ", nodeId)
+  	items = make(EvidenceItems, 0)
 	} else {
-		evidence := EvidenceItems {
-			EvidenceItem { Id: "3", Vote: 3, Author: "Michael", 
-		  	Reason: "Great article" },
-			EvidenceItem { Id: "4", Vote: 1, Author: "Ibrahim",
-				Reason: "The concept is also misleading" },
-		}
-		if err := json.NewEncoder(w).Encode(evidence); err != nil {
-			panic(err)
-		}
+		fmt.Println("Evidence for node: ", nodeId, " is: ", e)
+	  items = EvidenceItems { e }
+	}
+	if err := json.NewEncoder(w).Encode(items); err != nil {
+		panic(err)
 	}
 }
 
 func NodeCreateEvidenceHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("node create evidence")
 	vars := mux.Vars(r)
-	id := vars["id"]
-	fmt.Println("Evidence for node:", id)
-	vote := r.FormValue("vote")
-	reason := r.FormValue("reason")
-	fmt.Println("Vote:", vote)
-	fmt.Println("Reason:", reason)
-	fmt.Fprintln(w, "Evidence created")
+	nodeId := vars["id"]
+	vote, _ := strconv.Atoi(r.FormValue("vote"))
+	AddEvidence(EvidenceItem { NodeId: nodeId, 
+		Author: "Michael", Vote: vote, Reason: r.FormValue("reason") })
 }
