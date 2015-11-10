@@ -52,18 +52,10 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func NodeEvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
-	var items EvidenceItems
 	vars := mux.Vars(r)
 	nodeId := vars["id"]
-	e := GetEvidence(nodeId)
-	// GetEvidence returns a zero value struct if there is no evidence
-	if (e.Id == "") { 
-		fmt.Println("No evidence for node: ", nodeId)
-  	items = make(EvidenceItems, 0)
-	} else {
-		fmt.Println("Evidence for node: ", nodeId, " is: ", e)
-	  items = EvidenceItems { e }
-	}
+	items := GetEvidence(nodeId)
+	fmt.Println("Evidence for node: ", nodeId, " is: ", items)
 	if err := json.NewEncoder(w).Encode(items); err != nil {
 		panic(err)
 	}
@@ -73,6 +65,6 @@ func NodeCreateEvidenceHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	nodeId := vars["id"]
 	vote, _ := strconv.Atoi(r.FormValue("vote"))
-	AddEvidence(EvidenceItem { NodeId: nodeId, 
-		Author: "Michael", Vote: vote, Reason: r.FormValue("reason") })
+	AddEvidence(EvidenceItem { NodeId: nodeId, Author: "Michael", Vote: vote, 
+		Reason: r.FormValue("reason") })
 }
