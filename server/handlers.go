@@ -67,4 +67,8 @@ func NodeCreateEvidenceHandler(w http.ResponseWriter, r *http.Request) {
 	vote, _ := strconv.Atoi(r.FormValue("vote"))
 	AddEvidence(EvidenceItem { NodeId: nodeId, Author: "Michael", Vote: vote, 
 		Reason: r.FormValue("reason") })
+	items := GetEvidence(nodeId)
+	if err := json.NewEncoder(w).Encode(items); err != nil {
+		panic(err)
+	}
 }
