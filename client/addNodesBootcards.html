@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Taxonomy | Add nodes</title>
+  <title>Taxonomy</title>
 
   <link href="css/vis.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="lib/vis.js"></script>
@@ -19,7 +19,7 @@
 
   <style type="text/css">
     #graph {
-      height: 400px;
+      height: 600px;
     }
   </style>
 </head>
@@ -27,37 +27,28 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-sm-12">
-      <h1>Taxonomy | Add nodes</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-7 bootcards">
+    <div class="col-sm-8 bootcards">
       <div class="panel panel-default">
         <div class="panel-heading clearfix">
           <h3 class="panel-title pull-left">Taxonomy</h3>
           <div class="pull-right">
             <a class="btn btn-link" href="#"
-              data-toggle="modal" data-target="#addNodeModal">
+              data-toggle="modal" data-target="#addNodeModal"
+              data-bind="visible: node.selected">
               <i class="fa fa-plus"></i>Node
             </a>
-            <!--
-            <a class="btn btn-link" href="#"
-              data-toggle="modal" data-target="#addEdgeModal">
-              <i class="fa fa-plus"></i>Edge
-            </a>
-            -->
           </div>
         </div>
         <div id="graph"></div>
       </div>
     </div>
-    <div class="col-sm-5 bootcards-list">
+    <div class="col-sm-4 bootcards-list">
       <div class="panel panel-default">
         <div class="panel-heading clearfix">
           <h3 class="panel-title pull-left">Evidence</h3>
           <a class="btn btn-primary pull-right" href="#" 
-            data-toggle="modal" data-target="#addEvidenceModal">
+            data-toggle="modal" data-target="#addEvidenceModal"
+            data-bind="visible: node.selected">
             <i class="fa fa-plus"></i>Add
           </a>
         </div>
@@ -161,11 +152,12 @@
     }
 
     self.addNewNode = function() {
+      console.log("Add node:", self.node.label());
       $.post("http://localhost:8080/nodes",
         { label: self.node.label() }, function(data) {
         nodes.add(data);
         if (self.node.selected()) {
-          console.log("Node added:", data);
+          console.log("Add edge from:", self.node.selected(), "to:", data.id);
           self.addNewEdge(self.node.selected(), data.id);
         }
       }, "json");
@@ -195,8 +187,7 @@
       console.log("New edge:", from, to);
       $.post("http://localhost:8080/edges",
         { from: from, to: to }, function(data) {
-        console.log("Callback > Added edge:", from, to)
-        edges.add(data);
+         edges.add(data);
       }, "json");
     }
 
@@ -233,13 +224,17 @@
     edges: edges
   };
 
-  var options = {};
+  var options = {
+    editEdge: true
+  };
   var network = new vis.Network(container, data, options);
 
   network.on("click", showEvidence);
   network.on("dragStart", showEvidence);
 
-  var currentNode = "";
+  function canAddNode() {
+    return view.node.selected();
+  }
 
   function showEvidence(params) {
     if (params.nodes.length > 0) {

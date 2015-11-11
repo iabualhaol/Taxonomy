@@ -5,11 +5,6 @@ import "io/ioutil"
 import "os"
 import "strconv"
 
-func SaveData() {
-	SaveNodes()
-	SaveEvidence()
-}
-
 func SaveNodes() {
 	file, err := os.Create("data/nodes.dat")
 	Log(err)
@@ -28,8 +23,18 @@ func SaveEvidence() {
 	file.Close()
 }
 
+func SaveEdges() {
+	file, err := os.Create("data/edges.dat")
+	Log(err)
+	data, err := json.Marshal(edges)
+	Log(err)
+	file.Write(data)
+	file.Close()
+}
+
 func LoadData() {
 	LoadNodes()
+	LoadEdges()
 	LoadEvidence()
 }
 
@@ -40,10 +45,35 @@ func LoadNodes() {
 	}
 	err = json.Unmarshal(data, &nodes)
 	Log(err)
+	UpdateNextNodeId()
+}
+
+func UpdateNextNodeId() {
 	for _, n := range nodes {
 		id, _ := strconv.Atoi(n.Id)
 		if (nextNodeId <= id) {
 			nextNodeId = id + 1
+		}
+	}
+}
+
+func LoadEdges() {
+	data, err := ioutil.ReadFile("data/edges.dat")
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(data, &edges)
+	Log(err)
+	UpdateNextEdgeId()
+}
+
+func UpdateNextEdgeId() {
+	for _, eFN := range edges {
+		for _, e := range eFN {
+			id, _ := strconv.Atoi(e.Id)
+			if (nextEdgeId <= id) {
+				nextEdgeId = id + 1
+			}
 		}
 	}
 }
@@ -55,6 +85,10 @@ func LoadEvidence() {
 	}
 	err = json.Unmarshal(data, &evidence)
 	Log(err)
+	UpdateNextEvidenceId()
+}
+
+func UpdateNextEvidenceId() {
 	for _, items := range evidence {
 		for _, e := range items {
 			id, _ := strconv.Atoi(e.Id)

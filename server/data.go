@@ -26,7 +26,7 @@ func AddNode(n Node) (Node) {
 	n.Id = strconv.Itoa(nextNodeId)
 	nodes[n.Id] = n
 	nextNodeId++
-	SaveData()
+	SaveNodes()
 	return n
 }
 
@@ -49,7 +49,7 @@ func AddEdge(e Edge) (Edge) {
 	edges[e.From] = append(edges[e.From], e)
 	fmt.Println("Added edge: ", e)
 	nextEdgeId++
-	SaveData()
+	SaveEdges()
 	return e
 }
 
@@ -67,7 +67,7 @@ func AddEvidence(e EvidenceItem) {
 	e.Id = strconv.Itoa(nextEvidenceId)
 	evidence[e.NodeId] = append(evidence[e.NodeId], e)
 	nextEvidenceId++
-	SaveData()
+	SaveEvidence()
 }
 
 func GetEvidence(nodeId string) (EvidenceItems) {
