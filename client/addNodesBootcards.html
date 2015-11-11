@@ -85,7 +85,7 @@
           <div class="form-group">
             <label class="col-xs-3">Name</label>
             <div class="col-xs-9">
-              <input type="text" class="form-control" data-bind="value: node" 
+              <input type="text" class="form-control" data-bind="value: node.label" 
                 placeholder="Enter node name">
             </div>
           </div>
@@ -155,20 +155,28 @@
     self.evidence = ko.observableArray([]);
     self.vote = ko.observable("3");
     self.reason = ko.observable("");
-    self.node = ko.observable("");
+    self.node = {
+      label: ko.observable(""),
+      selected: ko.observable("")
+    }
 
     self.addNewNode = function() {
-      var id = (Math.random() * 1e7).toString(32);
-      nodes.add({ id: id, label: self.node() });
+      $.post("http://localhost:8080/nodes",
+        { label: self.node.label() }, function(data) {
+        nodes.add(data);
+        self.addNewEdge(self.node.selected(), data.id);
+      }, "json");
+      self.clearNewNode();
     }
 
     self.clearNewNode = function() {
+        self.node.label("")
     }
 
     self.createNodeEvidence = function() {
-      if (selectedNode != "") {
-        $.post("http://localhost:8080/nodes/" + selectedNode + "/evidence",
-          { vote: self.vote, reason: self.reason }, function(data) {
+      if (self.node.selected() != "") {
+        $.post("http://localhost:8080/nodes/" + self.node.selected() + "/evidence",
+          { vote: self.vote(), reason: self.reason() }, function(data) {
           view.evidence(data);
         }, "json");
         self.clearNewEvidence();
@@ -178,6 +186,13 @@
     self.clearNewEvidence = function() {
       self.vote("3");
       self.reason("");
+    }
+
+    self.addNewEdge = function(from, to) {
+      $.post("http://localhost:8080/edges",
+        { from: from, to: to }, function(data) {
+        edges.add(data);
+      }, "json");
     }
 
     self.convertToStars = function(vote) {
@@ -224,17 +239,17 @@
   function showEvidence(params) {
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
-      selectedNode = params.nodes[0]
-      $.getJSON("http://localhost:8080/nodes/" + selectedNode + "/evidence", 
+      view.node.selected(params.nodes[0]);
+      $.getJSON("http://localhost:8080/nodes/" + self.node.selected() + "/evidence", 
         function(data) {
           view.evidence(data);
         });
     } else if (params.edges.length > 0) {
       console.log("clicked on an edge: " + params.edges[0]);
-      selectedNode = "";
+      self.node.selected("");
       view.evidence([]);
     } else {
-      selectedNode = "";
+      self.node.selected("");
       view.evidence([]);
     }
   }

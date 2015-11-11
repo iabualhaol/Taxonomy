@@ -10,6 +10,7 @@ func InitRouter() {
 	router.HandleFunc("/nodes", CreateNodeHandler).Methods("POST")
 	router.HandleFunc("/nodes", NodeIndexHandler)
 	router.HandleFunc("/nodes/{id}", NodeViewHandler)
+	router.HandleFunc("/edges", CreateEdgeHandler).Methods("POST")
 	router.HandleFunc("/edges", EdgeIndexHandler)
 	router.HandleFunc("/edges/{id}", EdgeViewHandler)
 	router.HandleFunc("/nodes/{id}/evidence", NodeCreateEvidenceHandler).

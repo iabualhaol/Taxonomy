@@ -33,8 +33,7 @@ func CreateNodeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EdgeIndexHandler(w http.ResponseWriter, r *http.Request) {
-	edgeList := Edges{}
-	if err := json.NewEncoder(w).Encode(edgeList); err != nil {
+	if err := json.NewEncoder(w).Encode(GetAllEdges()); err != nil {
 		panic(err)
 	}
 }
@@ -43,6 +42,15 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
 	id := vars["id"]
 	fmt.Fprintln(w, "Edge:", id)
+}
+
+func CreateEdgeHandler(w http.ResponseWriter, r *http.Request) {
+	from := r.FormValue("from")
+	to := r.FormValue("to")
+	edge := AddEdge(Edge { From: from, To: to })
+	if err := json.NewEncoder(w).Encode(edge); err != nil {
+		panic(err)
+	}
 }
 
 func NodeEvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
