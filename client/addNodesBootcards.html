@@ -164,7 +164,10 @@
       $.post("http://localhost:8080/nodes",
         { label: self.node.label() }, function(data) {
         nodes.add(data);
-        self.addNewEdge(self.node.selected(), data.id);
+        if (self.node.selected()) {
+          console.log("Node added:", data);
+          self.addNewEdge(self.node.selected(), data.id);
+        }
       }, "json");
       self.clearNewNode();
     }
@@ -189,8 +192,10 @@
     }
 
     self.addNewEdge = function(from, to) {
+      console.log("New edge:", from, to);
       $.post("http://localhost:8080/edges",
         { from: from, to: to }, function(data) {
+        console.log("Callback > Added edge:", from, to)
         edges.add(data);
       }, "json");
     }
@@ -240,16 +245,16 @@
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
       view.node.selected(params.nodes[0]);
-      $.getJSON("http://localhost:8080/nodes/" + self.node.selected() + "/evidence", 
+      $.getJSON("http://localhost:8080/nodes/" + view.node.selected() + "/evidence", 
         function(data) {
           view.evidence(data);
         });
     } else if (params.edges.length > 0) {
       console.log("clicked on an edge: " + params.edges[0]);
-      self.node.selected("");
+      view.node.selected("");
       view.evidence([]);
     } else {
-      self.node.selected("");
+      view.node.selected("");
       view.evidence([]);
     }
   }

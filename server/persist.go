@@ -3,6 +3,7 @@ package main
 import "encoding/json"
 import "io/ioutil"
 import "os"
+import "strconv"
 
 func SaveData() {
 	SaveNodes()
@@ -39,6 +40,12 @@ func LoadNodes() {
 	}
 	err = json.Unmarshal(data, &nodes)
 	Log(err)
+	for _, n := range nodes {
+		id, _ := strconv.Atoi(n.Id)
+		if (nextNodeId <= id) {
+			nextNodeId = id + 1
+		}
+	}
 }
 
 func LoadEvidence() {
@@ -48,4 +55,12 @@ func LoadEvidence() {
 	}
 	err = json.Unmarshal(data, &evidence)
 	Log(err)
+	for _, items := range evidence {
+		for _, e := range items {
+			id, _ := strconv.Atoi(e.Id)
+			if (nextEvidenceId <= id) {
+				nextEvidenceId = id + 1
+			}
+		}
+	}
 }

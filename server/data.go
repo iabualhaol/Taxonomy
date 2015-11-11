@@ -17,6 +17,7 @@ var nextEvidenceId int = 1
 
 func InitData() {
 	nodes = make(map[string]Node)
+	edges = make(map[string]Edges)
 	evidence = make(map[string]EvidenceItems)
 	LoadData()
 }
@@ -44,6 +45,7 @@ func GetAllNodes() (Nodes) {
 func AddEdge(e Edge) (Edge) {
 	e.Id = strconv.Itoa(nextEdgeId)
 	e.Arrows = "To"
+	fmt.Println("About to add edge: ", e)
 	edges[e.From] = append(edges[e.From], e)
 	fmt.Println("Added edge: ", e)
 	nextEdgeId++
