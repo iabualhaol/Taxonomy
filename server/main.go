@@ -7,6 +7,7 @@ import "github.com/gorilla/mux"
 func InitRouter() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", IndexHandler)
+	router.HandleFunc("/nodes", CreateNodeHandler).Methods("POST")
 	router.HandleFunc("/nodes", NodeIndexHandler)
 	router.HandleFunc("/nodes/{id}", NodeViewHandler)
 	router.HandleFunc("/edges", EdgeIndexHandler)
