@@ -153,7 +153,7 @@
 
     self.addNewNode = function() {
       console.log("Add node:", self.node.label());
-      $.post("http://192.168.1.69:8080/nodes",
+      $.post("http://localhost:8080/nodes",
         { label: self.node.label() }, function(data) {
         nodes.add(data);
         if (self.node.selected()) {
@@ -170,7 +170,7 @@
 
     self.createNodeEvidence = function() {
       if (self.node.selected() != "") {
-        $.post("http://192.168.1.69:8080/nodes/" + self.node.selected() + "/evidence",
+        $.post("http://localhost:8080/nodes/" + self.node.selected() + "/evidence",
           { vote: self.vote(), reason: self.reason() }, function(data) {
           view.evidence(data);
         }, "json");
@@ -199,7 +199,7 @@
 
     self.addNewEdge = function(from, to) {
       console.log("New edge:", from, to);
-      $.post("http://192.168.1.69:8080/edges",
+      $.post("http://localhost:8080/edges",
         { from: from, to: to }, function(data) {
          edges.add(data);
       }, "json");
@@ -219,14 +219,14 @@
 
   // create an array with nodes
   var nodes = new vis.DataSet([]);
-  $.getJSON("http://192.168.1.69:8080/nodes", function(data) {
+  $.getJSON("http://localhost:8080/nodes", function(data) {
     nodes.update(data); 
     network.fit(); 
   });
 
   // create an array with edges
   var edges = new vis.DataSet([]);
-  $.getJSON("http://192.168.1.69:8080/edges", function(data) {
+  $.getJSON("http://localhost:8080/edges", function(data) {
     edges.update(data);  
     network.fit();
   });
@@ -259,7 +259,7 @@
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
       view.node.selected(params.nodes[0]);
-      $.getJSON("http://192.168.1.69:8080/nodes/" + view.node.selected() + "/evidence", 
+      $.getJSON("http://localhost:8080/nodes/" + view.node.selected() + "/evidence", 
         function(data) {
           view.evidence(data);
         });
