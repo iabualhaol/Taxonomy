@@ -25,6 +25,7 @@ func InitData() {
 func AddNode(n Node) (Node) {
 	n.Id = strconv.Itoa(nextNodeId)
 	nodes[n.Id] = n
+	fmt.Println("Add node:", n)
 	nextNodeId++
 	SaveNodes()
 	return n
@@ -45,9 +46,8 @@ func GetAllNodes() (Nodes) {
 func AddEdge(e Edge) (Edge) {
 	e.Id = strconv.Itoa(nextEdgeId)
 	e.Arrows = "To"
-	fmt.Println("About to add edge: ", e)
 	edges[e.From] = append(edges[e.From], e)
-	fmt.Println("Added edge: ", e)
+	fmt.Println("Add edge: ", e)
 	nextEdgeId++
 	SaveEdges()
 	return e

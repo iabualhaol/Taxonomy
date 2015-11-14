@@ -32,8 +32,9 @@
         <div class="panel-heading clearfix">
           <h3 class="panel-title pull-left">Taxonomy</h3>
           <div class="pull-right">
-            <a class="btn btn-link" href="#"
-              data-toggle="modal" data-target="#addNodeModal">
+            <a class="btn btn-default" href="#"
+              data-toggle="modal" data-target="#addNodeModal"
+              data-bind="visible: canAddNode">
               <i class="fa fa-plus"></i>Node
             </a>
           </div>
@@ -46,7 +47,7 @@
         <div class="panel-heading clearfix">
           <h3 class="panel-title pull-left">Evidence
             <span data-bind="visible: node.selected, html: averageEvidence"></span></h3>
-          <a class="btn btn-primary pull-right" href="#" 
+          <a class="btn btn-default pull-right" href="#" 
             data-toggle="modal" data-target="#addEvidenceModal"
             data-bind="visible: node.selected">
             <i class="fa fa-plus"></i>Add
@@ -148,19 +149,29 @@
       vote: ko.observable("3"),
       reason: ko.observable("")
     };
+    self.nodes = new vis.DataSet([]);
+    self.edges = new vis.DataSet([]);
     self.node = {
       label: ko.observable(""),
       selected: ko.observable("")
-    }
+    };
+    self.firstNode = ko.observable(true);
 
-    self.addNewNode = function() {
+     // Should only be able to add a node if a another node is selected or
+     // this is the first node added to the taxonomy. In the first case, an edge
+     // should be created between the selected node and the new node
+     self.addNewNode = function() {
       console.log("Add node:", self.node.label());
       $.post("http://localhost:8080/nodes",
         { label: self.node.label() }, function(data) {
-        nodes.add(data);
+        self.nodes.add(data);
         if (self.node.selected()) {
           console.log("Add edge from:", self.node.selected(), "to:", data.id);
           self.addNewEdge(self.node.selected(), data.id);
+        }
+        network.fit();
+        if (self.nodes.length > 0) {
+          self.firstNode(false);
         }
       }, "json");
       self.clearNewNode();
@@ -170,11 +181,16 @@
         self.node.label("")
     }
 
-    self.createNodeEvidence = function() {
+    self.canAddNode = ko.computed(function() {
+      console.log("First node: ", self.firstNode());
+      return self.node.selected() || self.firstNode();
+    });
+
+   self.createNodeEvidence = function() {
       if (self.node.selected() != "") {
         $.post("http://localhost:8080/nodes/" + self.node.selected() + "/evidence",
           { vote: self.evidence.vote(), reason: self.evidence.reason() }, function(data) {
-          view.evidence.items(data);
+          self.evidence.items(data);
         }, "json");
         self.clearNewEvidence();
       }
@@ -203,7 +219,7 @@
       console.log("New edge:", from, to);
       $.post("http://localhost:8080/edges",
         { from: from, to: to }, function(data) {
-         edges.add(data);
+         self.edges.add(data);
       }, "json");
     }
 
@@ -219,25 +235,24 @@
   var view = new TaxonomyViewModel();
   ko.applyBindings(view);
 
-  // create an array with nodes
-  var nodes = new vis.DataSet([]);
   $.getJSON("http://localhost:8080/nodes", function(data) {
-    nodes.update(data); 
+    view.nodes.update(data); 
+    if (view.nodes.length > 0) {
+      view.firstNode(false);
+    }
     network.fit(); 
   });
 
-  // create an array with edges
-  var edges = new vis.DataSet([]);
   $.getJSON("http://localhost:8080/edges", function(data) {
-    edges.update(data);  
+    view.edges.update(data);  
     network.fit();
   });
 
   // create a network
   var container = document.getElementById('graph');
   var data = {
-    nodes: nodes,
-    edges: edges
+    nodes: view.nodes,
+    edges: view.edges
   };
 
   var options = {
@@ -252,10 +267,6 @@
 
   network.on("click", showEvidence);
   network.on("dragStart", showEvidence);
-
-  function canAddNode() {
-    return view.node.selected();
-  }
 
   function showEvidence(params) {
     if (params.nodes.length > 0) {

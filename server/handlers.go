@@ -63,7 +63,6 @@ func NodeEvidenceIndexHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	nodeId := vars["id"]
 	items := GetEvidence(nodeId)
-	fmt.Println("Evidence for node: ", nodeId, " is: ", items)
 	SetHeaders(w)
 	if err := json.NewEncoder(w).Encode(items); err != nil {
 		panic(err)
