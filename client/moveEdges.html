@@ -1,0 +1,291 @@
+<!doctype html>
+<html>
+<head>
+  <title>Taxonomy</title>
+
+  <link href="css/vis.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="lib/vis.js"></script>
+
+  <script type='text/javascript' src='lib/jquery-1.11.3.min.js'></script> 
+  <script type='text/javascript' src='lib/knockout-3.2.0.js'></script> 
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <script type="text/javascript" src="lib/bootstrap.min.js"></script>
+
+  <link href="css/font-awesome.css" rel="stylesheet">
+
+  <link href="css/bootcards-desktop.min.css" rel="stylesheet">
+  <script type="text/javascript" src="lib/bootcards.min.js"></script>
+
+  <style type="text/css">
+    #graph {
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8 bootcards">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title pull-left">Taxonomy</h3>
+          <div class="pull-right">
+            <a class="btn btn-default" href="#"
+              data-toggle="modal" data-target="#addNodeModal"
+              data-bind="visible: canAddNode">
+              <i class="fa fa-plus"></i>Node
+            </a>
+          </div>
+        </div>
+        <div id="graph"></div>
+      </div>
+    </div>
+    <div class="col-sm-4 bootcards-list">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title pull-left">Evidence
+            <span data-bind="visible: node.selected, html: averageEvidence"></span></h3>
+          <a class="btn btn-default pull-right" href="#" 
+            data-toggle="modal" data-target="#addEvidenceModal"
+            data-bind="visible: node.selected">
+            <i class="fa fa-plus"></i>Add
+          </a>
+        </div>
+        <div class="list-group" data-bind="foreach: evidence.items">
+          <div class="list-group-item" href="#">
+            <img src="images/michael.jpg" class="img-rounded pull-left"/>
+            <h4 class="list-group-item-heading" 
+              data-bind="html: $root.convertToStars(vote)"></h4>
+            <p class="list-group-item-text" data-bind="text: reason"></p>
+          </div>
+        </div> <!-- list-group -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="addNodeModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-heading-style pull-left">New node</h3>
+      </div> <!-- panel-header -->
+      <div class="modal-body">
+        <form class="form-horizontal" onSubmit="return false;">
+          <div class="form-group">
+            <label class="col-xs-3">Name</label>
+            <div class="col-xs-9">
+              <input type="text" class="form-control" data-bind="value: node.label" 
+                placeholder="Enter node name">
+            </div>
+          </div>
+        </form>
+      </div> <!-- modal-body -->
+      <div class="panel-footer">
+        <button class="btn pull-left" data-dismiss="modal"
+          data-bind="click: clearNewNode">
+          <i class="fa fa-times"></i>Cancel
+        </button>
+        <button class="btn btn-primary pull-right" data-dismiss="modal"
+          data-bind="click: addNewNode">
+          <i class="fa fa-check"></i>Save
+        </button>
+      </div> <!-- panel-footer -->
+    </div>
+  </div>
+</div>
+
+<div id="addEvidenceModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-heading-title pull-left">New evidence</h3>
+        </div> <!-- panel-heading -->
+        <div class="modal-body">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="col-xs-3">Vote</label>
+              <div class="col-xs-9">
+                <select data-bind="value: evidence.vote">
+                  <option value="1">&#9733;</i></option>
+                  <option value="2">&#9733;&#9733;</option>
+                  <option value="3" selected>&#9733;&#9733;&#9733;</option>
+                  <option value="4">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+                  <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-3">Reason</label>
+              <div class="col-xs-9">
+                <textarea class="form-control" data-bind="value: evidence.reason" rows="3" 
+                  placeholder="Provide a reason"></textarea>
+              </div>
+            </div>
+          </form>
+        </div> <!-- modal-body -->
+        <div class="panel-footer">
+          <button class="btn pull-left" data-dismiss="modal"
+            data-bind="click: clearNewEvidence">
+            <i class="fa fa-times"></i>Cancel
+          </button>
+          <button class="btn btn-primary pull-right" data-dismiss="modal"
+            data-bind="click: createNodeEvidence">
+            <i class="fa fa-check"></i>Save
+          </button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function TaxonomyViewModel() {
+    var self = this;
+    self.evidence = {
+      items: ko.observableArray([]),
+      vote: ko.observable("3"),
+      reason: ko.observable("")
+    };
+    self.nodes = new vis.DataSet([]);
+    self.edges = new vis.DataSet([]);
+    self.node = {
+      label: ko.observable(""),
+      selected: ko.observable("")
+    };
+    self.firstNode = ko.observable(true);
+
+     // Should only be able to add a node if a another node is selected or
+     // this is the first node added to the taxonomy. In the first case, an edge
+     // should be created between the selected node and the new node
+     self.addNewNode = function() {
+      console.log("Add node:", self.node.label());
+      $.post("http://localhost:8080/nodes",
+        { label: self.node.label() }, function(data) {
+        self.nodes.add(data);
+        if (self.node.selected()) {
+          console.log("Add edge from:", self.node.selected(), "to:", data.id);
+          self.addNewEdge(self.node.selected(), data.id);
+        }
+        network.fit();
+        if (self.nodes.length > 0) {
+          self.firstNode(false);
+        }
+      }, "json");
+      self.clearNewNode();
+    }
+
+    self.clearNewNode = function() {
+        self.node.label("")
+    }
+
+    self.canAddNode = ko.computed(function() {
+      console.log("First node: ", self.firstNode());
+      return self.node.selected() || self.firstNode();
+    });
+
+   self.createNodeEvidence = function() {
+      if (self.node.selected() != "") {
+        $.post("http://localhost:8080/nodes/" + self.node.selected() + "/evidence",
+          { vote: self.evidence.vote(), reason: self.evidence.reason() }, function(data) {
+          self.evidence.items(data);
+        }, "json");
+        self.clearNewEvidence();
+      }
+    }
+
+    self.clearNewEvidence = function() {
+      self.evidence.vote("3");
+      self.evidence.reason("");
+    }
+
+    self.averageEvidence = ko.computed(function() {
+      var points = 0;
+      var items = self.evidence.items();
+      for (i in items) {
+        points += items[i].vote;
+      }
+      if (items && items.length > 0) {
+        var average = points/items.length;
+        return self.convertToStars(Math.floor(average)) + " " + Math.round(10 * average)/10;
+      } else {
+        return "(NA)";
+      }
+    });
+
+    self.addNewEdge = function(from, to) {
+      console.log("New edge:", from, to);
+      $.post("http://localhost:8080/edges",
+        { from: from, to: to }, function(data) {
+         self.edges.add(data);
+      }, "json");
+    }
+
+    self.convertToStars = function(vote) {
+      var stars = "";
+      for (i=0; i<vote; i++) {
+        stars = stars + "&#9733;"
+      }
+      return stars;
+    }
+  }
+
+  var view = new TaxonomyViewModel();
+  ko.applyBindings(view);
+
+  $.getJSON("http://localhost:8080/nodes", function(data) {
+    view.nodes.update(data); 
+    if (view.nodes.length > 0) {
+      view.firstNode(false);
+    }
+    network.fit(); 
+  });
+
+  $.getJSON("http://localhost:8080/edges", function(data) {
+    view.edges.update(data);  
+    network.fit();
+  });
+
+  // create a network
+  var container = document.getElementById('graph');
+  var data = {
+    nodes: view.nodes,
+    edges: view.edges
+  };
+
+  var options = {
+    edges: {
+      smooth: {
+        type: "cubicBezier",
+        roundness: 0.4
+      }
+    },
+  };
+  var network = new vis.Network(container, data, options);
+
+  network.on("click", showEvidence);
+  network.on("dragStart", showEvidence);
+
+  function showEvidence(params) {
+    if (params.nodes.length > 0) {
+      console.log("clicked on a node: " + params.nodes[0]);
+      view.node.selected(params.nodes[0]);
+      $.getJSON("http://localhost:8080/nodes/" + view.node.selected() + "/evidence", 
+        function(data) {
+          view.evidence.items(data);
+        });
+    } else if (params.edges.length > 0) {
+      console.log("clicked on an edge: " + params.edges[0]);
+      view.node.selected("");
+      view.evidence.items([]);
+    } else {
+      view.node.selected("");
+      view.evidence.items([]);
+    }
+  }
+</script>
+
+</body>
+</html>
