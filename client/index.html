@@ -277,8 +277,8 @@
   var network = new vis.Network(container, data, options);
 
   network.on("click", showEvidence);
-  network.on("dragStart", showEvidence);
-
+  network.on("dragStart", showEvidenceOnDragStart);
+  
   function showEvidence(params) {
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
@@ -294,6 +294,15 @@
     } else {
       view.node.selected("");
       view.evidence.items([]);
+    }
+  }
+
+  function showEvidenceOnDragStart(params) {
+    if (params.nodes.length > 0 || params.edges.length > 0) {
+      // drag event started on node or edge
+      showEvidence(params);
+    } else {
+      // drag event started on background
     }
   }
 </script>

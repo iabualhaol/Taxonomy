@@ -277,8 +277,8 @@
   var network = new vis.Network(container, data, options);
 
   network.on("click", showEvidence);
-  network.on("dragStart", showEvidence);
-
+  network.on("dragStart", showEvidenceOnDragStart);
+  
   function showEvidence(params) {
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
@@ -295,6 +295,15 @@
       view.node.selected("");
       view.evidence.items([]);
     }
+  }
+
+  function showEvidenceOnDragStart(params) {
+    // if drag event started on node or edge treat it as a click
+    if (params.nodes.length > 0 || params.edges.length > 0) {
+      showEvidence(params);
+    } 
+    // otherwise, don't deselect node or edge if selected
+    // should still show evidence for them
   }
 </script>
 
