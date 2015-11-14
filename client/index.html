@@ -265,6 +265,13 @@
     interaction: {
       navigationButtons: true,
       keyboard: true
+    },
+    manipulation: {
+      editEdge: true,
+      addNode: false,
+      deleteNode: false,
+      addEdge: false,
+      deleteEdge: false,
     }
   };
   var network = new vis.Network(container, data, options);
