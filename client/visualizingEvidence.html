@@ -52,7 +52,7 @@
             <i class="fa fa-plus"></i>Add
           </a>
         </div>
-        <div class="list-group" data-bind="foreach: evidence">
+        <div class="list-group" data-bind="foreach: evidence.items">
           <div class="list-group-item" href="#">
             <img src="images/michael.jpg" class="img-rounded pull-left"/>
             <h4 class="list-group-item-heading" 
@@ -108,7 +108,7 @@
             <div class="form-group">
               <label class="col-xs-3">Vote</label>
               <div class="col-xs-9">
-                <select data-bind="value: vote">
+                <select data-bind="value: evidence.vote">
                   <option value="1">&#9733;</i></option>
                   <option value="2">&#9733;&#9733;</option>
                   <option value="3" selected>&#9733;&#9733;&#9733;</option>
@@ -120,7 +120,7 @@
             <div class="form-group">
               <label class="col-xs-3">Reason</label>
               <div class="col-xs-9">
-                <textarea class="form-control" data-bind="value: reason" rows="3" 
+                <textarea class="form-control" data-bind="value: evidence.reason" rows="3" 
                   placeholder="Provide a reason"></textarea>
               </div>
             </div>
@@ -143,9 +143,11 @@
 <script type="text/javascript">
   function TaxonomyViewModel() {
     var self = this;
-    self.evidence = ko.observableArray([]);
-    self.vote = ko.observable("3");
-    self.reason = ko.observable("");
+    self.evidence = {
+      items: ko.observableArray([]),
+      vote: ko.observable("3"),
+      reason: ko.observable("")
+    };
     self.node = {
       label: ko.observable(""),
       selected: ko.observable("")
@@ -171,21 +173,21 @@
     self.createNodeEvidence = function() {
       if (self.node.selected() != "") {
         $.post("http://localhost:8080/nodes/" + self.node.selected() + "/evidence",
-          { vote: self.vote(), reason: self.reason() }, function(data) {
-          view.evidence(data);
+          { vote: self.evidence.vote(), reason: self.evidence.reason() }, function(data) {
+          view.evidence.items(data);
         }, "json");
         self.clearNewEvidence();
       }
     }
 
     self.clearNewEvidence = function() {
-      self.vote("3");
-      self.reason("");
+      self.evidence.vote("3");
+      self.evidence.reason("");
     }
 
     self.averageEvidence = ko.computed(function() {
       var points = 0;
-      var items = self.evidence();
+      var items = self.evidence.items();
       for (i in items) {
         points += items[i].vote;
       }
@@ -261,15 +263,15 @@
       view.node.selected(params.nodes[0]);
       $.getJSON("http://localhost:8080/nodes/" + view.node.selected() + "/evidence", 
         function(data) {
-          view.evidence(data);
+          view.evidence.items(data);
         });
     } else if (params.edges.length > 0) {
       console.log("clicked on an edge: " + params.edges[0]);
       view.node.selected("");
-      view.evidence([]);
+      view.evidence.items([]);
     } else {
       view.node.selected("");
-      view.evidence([]);
+      view.evidence.items([]);
     }
   }
 </script>
