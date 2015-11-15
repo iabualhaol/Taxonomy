@@ -9,6 +9,7 @@ var nextNodeId int = 1
 
 //map of node ids -> edge lists
 var edges map[string]Edges
+var edgesById map[string]Edge
 var nextEdgeId int = 1
 
 // map of node ids -> evident items 
@@ -47,10 +48,26 @@ func AddEdge(e Edge) (Edge) {
 	e.Id = strconv.Itoa(nextEdgeId)
 	e.Arrows = "To"
 	edges[e.From] = append(edges[e.From], e)
+	edgesById[e.From] = e
 	fmt.Println("Add edge: ", e)
 	nextEdgeId++
 	SaveEdges()
 	return e
+}
+
+func UpdateEdge(e Edge) {
+	edge := GetEdge(e.Id)
+	if (edge.Id != "") {
+		edge.From = e.From
+		edge.To = e.To
+		edgesById[edge.Id] = edge
+	} else {
+		fmt.Println("Tried to update non-existing edge:", e)
+	}
+}
+
+func GetEdge(edgeId string) (Edge) {
+	return edgesById[edgeId]
 }
 
 func GetAllEdges() (Edges) {

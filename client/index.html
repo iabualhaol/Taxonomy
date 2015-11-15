@@ -162,7 +162,7 @@
      // should be created between the selected node and the new node
      self.addNewNode = function() {
       console.log("Add node:", self.node.label());
-      $.post("http://192.168.1.69:8080/nodes",
+      $.post("http://:8080/nodes",
         { label: self.node.label() }, function(data) {
         self.nodes.add(data);
         if (self.node.selected()) {
@@ -188,7 +188,7 @@
 
    self.createNodeEvidence = function() {
       if (self.node.selected() != "") {
-        $.post("http://192.168.1.69:8080/nodes/" + self.node.selected() + "/evidence",
+        $.post("http://:8080/nodes/" + self.node.selected() + "/evidence",
           { vote: self.evidence.vote(), reason: self.evidence.reason() }, function(data) {
           self.evidence.items(data);
         }, "json");
@@ -217,11 +217,23 @@
 
     self.addNewEdge = function(from, to) {
       console.log("New edge:", from, to);
-      $.post("http://192.168.1.69:8080/edges",
+      $.post("http://:8080/edges",
         { from: from, to: to }, function(data) {
-         self.edges.add(data);
+        self.edges.add(data);
       }, "json");
     }
+
+    self.edges.on("update", function(event, params, sender) {
+      // updates will contain an id: this tells the server that this
+      // is an update, not the addition of a new edge
+      // update event passes a list of items and associated data
+      var e = params.data[0];
+      console.log("Edge updated: ", e.id, "from:", e.from, "to:", e.to);
+      $.post("http://:8080/edges",
+        { id: e.id, from: e.from, to: e.to }, function(data) {
+        // nothing to do
+      }, "json");
+    });
 
     self.convertToStars = function(vote) {
       var stars = "";
@@ -235,7 +247,7 @@
   var view = new TaxonomyViewModel();
   ko.applyBindings(view);
 
-  $.getJSON("http://192.168.1.69:8080/nodes", function(data) {
+  $.getJSON("http://:8080/nodes", function(data) {
     view.nodes.update(data); 
     if (view.nodes.length > 0) {
       view.firstNode(false);
@@ -243,7 +255,7 @@
     network.fit(); 
   });
 
-  $.getJSON("http://192.168.1.69:8080/edges", function(data) {
+  $.getJSON("http://:8080/edges", function(data) {
     view.edges.update(data);  
     network.fit();
   });
@@ -283,7 +295,7 @@
     if (params.nodes.length > 0) {
       console.log("clicked on a node: " + params.nodes[0]);
       view.node.selected(params.nodes[0]);
-      $.getJSON("http://192.168.1.69:8080/nodes/" + view.node.selected() + "/evidence", 
+      $.getJSON("http://:8080/nodes/" + view.node.selected() + "/evidence", 
         function(data) {
           view.evidence.items(data);
         });
@@ -298,12 +310,12 @@
   }
 
   function showEvidenceOnDragStart(params) {
+    // if drag event started on node or edge treat it as a click
     if (params.nodes.length > 0 || params.edges.length > 0) {
-      // drag event started on node or edge
       showEvidence(params);
-    } else {
-      // drag event started on background
-    }
+    } 
+    // otherwise, don't remove evidence for node or edge if one is selected
+    // should still show evidence for them
   }
 </script>
 

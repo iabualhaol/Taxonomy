@@ -219,9 +219,21 @@
       console.log("New edge:", from, to);
       $.post("http://localhost:8080/edges",
         { from: from, to: to }, function(data) {
-         self.edges.add(data);
+        self.edges.add(data);
       }, "json");
     }
+
+    self.edges.on("update", function(event, params, sender) {
+      // updates will contain an id: this tells the server that this
+      // is an update, not the addition of a new edge
+      // update event passes a list of items and associated data
+      var e = params.data[0];
+      console.log("Edge updated: ", e.id, "from:", e.from, "to:", e.to);
+      $.post("http://localhost:8080/edges",
+        { id: e.id, from: e.from, to: e.to }, function(data) {
+        // nothing to do
+      }, "json");
+    });
 
     self.convertToStars = function(vote) {
       var stars = "";
@@ -302,7 +314,7 @@
     if (params.nodes.length > 0 || params.edges.length > 0) {
       showEvidence(params);
     } 
-    // otherwise, don't deselect node or edge if selected
+    // otherwise, don't remove evidence for node or edge if one is selected
     // should still show evidence for them
   }
 </script>

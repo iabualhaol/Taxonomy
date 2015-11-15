@@ -49,10 +49,17 @@ func EdgeViewHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Edge:", id)
 }
 
-func CreateEdgeHandler(w http.ResponseWriter, r *http.Request) {
+func CreateOrUpdateEdgeHandler(w http.ResponseWriter, r *http.Request) {
+	var edge Edge
+	id := r.FormValue("id")
 	from := r.FormValue("from")
 	to := r.FormValue("to")
-	edge := AddEdge(Edge { From: from, To: to })
+	fmt.Println("Create or update edge:", id, "from:", from, "to:", to)
+	if (id == "") {
+		edge = AddEdge(Edge { From: from, To: to })
+	} else {
+		UpdateEdge(Edge { Id: id, From: from, To: to })
+	}
 	SetHeaders(w)
 	if err := json.NewEncoder(w).Encode(edge); err != nil {
 		panic(err)
