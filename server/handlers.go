@@ -59,6 +59,8 @@ func CreateOrUpdateEdgeHandler(w http.ResponseWriter, r *http.Request) {
 		edge = AddEdge(Edge { From: from, To: to })
 	} else {
 		UpdateEdge(Edge { Id: id, From: from, To: to })
+		_, _, e := GetEdge(id)
+		fmt.Println("Edge (after updated):", e)
 	}
 	SetHeaders(w)
 	if err := json.NewEncoder(w).Encode(edge); err != nil {
