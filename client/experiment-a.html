@@ -19,7 +19,8 @@
   <script>
 $(function() {
   var taxi = {};
-  taxi.graph = new GraphViewModel();
+  taxi.graph = new GraphViewModel()
+    .createNetwork(document.getElementById('graph'), {});
   ko.applyBindings(taxi);
 });
   </script>
