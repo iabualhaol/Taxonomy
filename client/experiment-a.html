@@ -22,8 +22,8 @@ $(function() {
   var taxi = {};
   taxi.graph = new GraphViewModel()
     .createGraph(document.getElementById('graph'), {});
-  taxi.evidence = new EvidenceViewModel()
-    .init(graph);
+  taxi.evidence = new EvidenceViewModel(taxi.graph)
+    .init();
   ko.applyBindings(taxi);
 });
   </script>
@@ -66,16 +66,17 @@ $(function() {
               <i class="fa fa-plus"></i>Add
             </a>
           </div>
-<!--
           <div class="list-group" data-bind="foreach: evidence.items">
             <div class="list-group-item" href="#">
               <img src="images/michael.jpg" class="img-rounded pull-left"/>
               <h4 class="list-group-item-heading" 
+                data-bind="text: vote"></h4>
+<!--
                 data-bind="html: $root.convertToStars(vote)"></h4>
+-->
               <p class="list-group-item-text" data-bind="text: reason"></p>
             </div>
           </div>
--->
         </div>
       </div> <!-- right column with evidence items -->
 

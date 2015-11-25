@@ -1,7 +1,9 @@
 var GraphViewModel = function() {
 	var self = this;
 
-	self.graph = {};
+   	self.selectedNode = ko.observable("");
+
+ 	self.graph = {};
 	self.nodes = new vis.DataSet([]);
     self.edges = new vis.DataSet([]);
 
@@ -13,6 +15,7 @@ var GraphViewModel = function() {
 	  	self.graph = new vis.Network(container, data, options);
     	self.loadNodes();
     	self.loadEdges();
+    	return self;
     }
 
     self.loadNodes = function() {
@@ -32,5 +35,9 @@ var GraphViewModel = function() {
 		    self.edges.update(data);  
 		    self.graph.fit();
 		});
+    }
+
+    self.on = function(eventType, callback) {
+    	self.graph.on(eventType, callback);
     }
 }
