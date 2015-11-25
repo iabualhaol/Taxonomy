@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Taxonomy</title>
+  <title>Taxi > Experiment A</title>
 
   <script type='text/javascript' src='lib/jquery-1.11.3.min.js'></script> 
   <script type="text/javascript" src="lib/bootstrap.min.js"></script>
@@ -16,5 +16,58 @@
   <link href="css/taxi.css" rel="stylesheet">
 </head>
 <body>
+
+  <div class="container">
+    <div class="row">
+
+      <div class="col-sm-8 bootcards">
+        <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">Taxi > Experiment A</h3>
+            <div class="pull-right">
+              <a class="btn btn-default" href="#"
+                data-toggle="modal" data-target="#addNodeModal">
+ <!--
+                data-bind="visible: canAddNode">
+-->
+                <i class="fa fa-plus"></i>Node
+              </a>
+            </div>
+          </div>
+          <div id="graph"></div>
+        </div>
+      </div> <!-- main area with graph -->
+
+      <div class="col-sm-4 bootcards-list">
+        <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left">Evidence</h3>
+<!--
+              <span data-bind="visible: node.selected, html: averageEvidence"></span></h3>
+-->
+            <a class="btn btn-default pull-right" href="#" 
+              data-toggle="modal" data-target="#addEvidenceModal">
+<!--
+              data-bind="visible: node.selected">
+-->
+              <i class="fa fa-plus"></i>Add
+            </a>
+          </div>
+<!--
+          <div class="list-group" data-bind="foreach: evidence.items">
+            <div class="list-group-item" href="#">
+              <img src="images/michael.jpg" class="img-rounded pull-left"/>
+              <h4 class="list-group-item-heading" 
+                data-bind="html: $root.convertToStars(vote)"></h4>
+              <p class="list-group-item-text" data-bind="text: reason"></p>
+            </div>
+          </div>
+-->
+        </div>
+      </div> <!-- right column with evidence items -->
+
+    </div>
+  </div>
+
 </body>
 </html>
