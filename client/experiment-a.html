@@ -3,17 +3,26 @@
 <head>
   <title>Taxi > Experiment A</title>
 
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/bootcards-desktop.min.css" rel="stylesheet">
+  <link href="css/font-awesome.css" rel="stylesheet">
+  <link href="css/vis.css" rel="stylesheet">
+  <link href="css/taxi.css" rel="stylesheet">
+
   <script type='text/javascript' src='lib/jquery-1.11.3.min.js'></script> 
   <script type="text/javascript" src="lib/bootstrap.min.js"></script>
   <script type="text/javascript" src="lib/bootcards.min.js"></script>
   <script type='text/javascript' src='lib/knockout-3.2.0.js'></script> 
   <script type="text/javascript" src="lib/vis.js"></script>
 
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/bootcards-desktop.min.css" rel="stylesheet">
-  <link href="css/font-awesome.css" rel="stylesheet">
-  <link href="css/vis.css" rel="stylesheet">
-  <link href="css/taxi.css" rel="stylesheet">
+  <script type="text/javascript" src="js/graph.js"></script>
+  <script>
+$(function() {
+  var taxi = {};
+  taxi.graph = new GraphViewModel();
+  ko.applyBindings(taxi);
+});
+  </script>
 </head>
 <body>
 
