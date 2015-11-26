@@ -4,6 +4,10 @@ var EvidenceViewModel = function(graph) {
 
 	self.items = ko.observableArray([]);
 
+	// add evidence modal
+	self.vote = ko.observable("3");
+    self.reason = ko.observable("");
+
     self.init = function() {
     	self.graph.on("click", self.showEvidence);
     	self.graph.on("dragStart", self.showEvidenceWhileSelected);
@@ -23,7 +27,7 @@ var EvidenceViewModel = function(graph) {
 	      self.items([]);
 	    } else {
 	      self.graph.selectedNode("");
-	      view.items([]);
+	      self.items([]);
 	    }
 	}
 
@@ -53,5 +57,22 @@ var EvidenceViewModel = function(graph) {
         	stars = stars + "&#9733;"
       	}
       	return stars;
+    }
+
+    self.createNodeEvidence = function() {
+      	if (self.graph.selectedNode() != "") {
+      		console.log("createNodeEvidence:", self.graph.selectedNode());
+        	$.post("http://localhost:8080/nodes/" + self.graph.selectedNode() + "/evidence",
+          		{ vote: self.vote(), reason: self.reason() }, function(data) {
+          		self.items(data);
+        	}, "json");
+        	self.clearNewEvidence();
+      	}
+    }
+
+    self.clearNewEvidence = function() {
+    	console.log("clearNewEvidence");
+      	self.vote("3");
+      	self.reason("[EMPTY]");
     }
 }

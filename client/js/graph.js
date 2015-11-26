@@ -40,4 +40,12 @@ var GraphViewModel = function() {
     self.on = function(eventType, callback) {
     	self.graph.on(eventType, callback);
     }
+
+    self.selectedNodeLabel = ko.computed(function() {
+    	if (self.selectedNode()) {
+    		return self.nodes.get(self.selectedNode()).label;
+    	} else {
+    		return "NA";
+    	}
+    });
 }
