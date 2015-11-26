@@ -73,6 +73,6 @@ var EvidenceViewModel = function(graph) {
     self.clearNewEvidence = function() {
     	console.log("clearNewEvidence");
       	self.vote("3");
-      	self.reason("[EMPTY]");
+      	self.reason("");
     }
 }

@@ -2,12 +2,19 @@ var GraphViewModel = function() {
 	var self = this;
 
    	self.selectedNode = ko.observable("");
+   	self.newNodeLabel = ko.observable("");
+
+   	self.isEmpty = ko.observable(true);
 
  	self.graph = {};
 	self.nodes = new vis.DataSet([]);
     self.edges = new vis.DataSet([]);
 
-    self.createGraph = function(container, options) {
+    self.on = function(eventType, callback) {
+    	self.graph.on(eventType, callback);
+    }
+
+   	self.createGraph = function(container, options) {
     	var data = {
 			nodes: self.nodes,
 			edges: self.edges
@@ -37,15 +44,44 @@ var GraphViewModel = function() {
 		});
     }
 
-    self.on = function(eventType, callback) {
-    	self.graph.on(eventType, callback);
-    }
-
-    self.selectedNodeLabel = ko.computed(function() {
+     self.selectedNodeLabel = ko.computed(function() {
     	if (self.selectedNode()) {
     		return self.nodes.get(self.selectedNode()).label;
     	} else {
-    		return "NA";
+    		return "";
     	}
     });
+
+    self.addNewNode = function() {
+      	console.log("Add node:", self.newNodeLabel());
+      	$.post("http://localhost:8080/nodes",
+      		{ label: self.newNodeLabel() }, function(data) {
+      		self.nodes.add(data);
+        	if (self.selectedNode()) {
+          		console.log("Add edge from:", self.selectedNode(), "to:", data.id);
+          		self.addNewEdge(self.selectedNode(), data.id);
+        	}
+        	self.graph.fit();
+        	if (self.nodes.length > 0) {
+          		self.isEmpty(false);
+        	}
+      	}, "json");
+      	self.clearNewNode();
+    }
+
+    self.clearNewNode = function() {
+        self.newNodeLabel("")
+    }
+
+    self.canAddNode = ko.computed(function() {
+      	return self.selectedNode() || self.isEmpty();
+    });
+
+    self.addNewEdge = function(from, to) {
+      	console.log("New edge:", from, to);
+      	$.post("http://localhost:8080/edges",
+      		{ from: from, to: to }, function(data) {
+        		self.edges.add(data);
+      	}, "json");
+    }
 }
