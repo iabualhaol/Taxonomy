@@ -1,7 +1,5 @@
 var EvidenceViewModel = function(graph) {
 	var self = this;
-
-	console.log("EvidenceViewModel.graph:", graph);
 	self.graph = graph;
 
 	self.items = ko.observableArray([]);
@@ -14,7 +12,6 @@ var EvidenceViewModel = function(graph) {
 
     self.showEvidence = function(event) {
 	    if (event.nodes.length > 0) {
-		    console.log("clicked on a node: " + event.nodes[0]);
 		    self.graph.selectedNode(event.nodes[0]);
 		    $.getJSON("http://localhost:8080/nodes/" + self.graph.selectedNode() + "/evidence", 
 		        function(data) {
@@ -35,4 +32,26 @@ var EvidenceViewModel = function(graph) {
       		self.showEvidence(event);
     	} 
 	}
+
+	self.averageEvidence = ko.computed(function() {
+	    var points = 0;
+	    var items = self.items();
+	    for (i in items) {
+	    	points += items[i].vote;
+	    }
+	    if (items && items.length > 0) {
+	    	var average = points/items.length;
+	    	return self.convertToStars(Math.floor(average)) + " " + Math.round(10 * average)/10;
+	    } else {
+	        return "(NA)";
+	    }
+    });
+
+    self.convertToStars = function(vote) {
+      	var stars = "";
+      	for (i=0; i<vote; i++) {
+        	stars = stars + "&#9733;"
+      	}
+      	return stars;
+    }
 }

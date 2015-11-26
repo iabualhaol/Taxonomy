@@ -54,15 +54,11 @@ $(function() {
       <div class="col-sm-4 bootcards-list">
         <div class="panel panel-default">
           <div class="panel-heading clearfix">
-            <h3 class="panel-title pull-left">Evidence</h3>
-<!--
-              <span data-bind="visible: node.selected, html: averageEvidence"></span></h3>
--->
+            <h3 class="panel-title pull-left">Evidence
+              <span data-bind="visible: graph.selectedNode, html: evidence.averageEvidence"></span></h3>
             <a class="btn btn-default pull-right" href="#" 
-              data-toggle="modal" data-target="#addEvidenceModal">
-<!--
-              data-bind="visible: node.selected">
--->
+              data-toggle="modal" data-target="#addEvidenceModal"
+              data-bind="visible: graph.selectedNode">
               <i class="fa fa-plus"></i>Add
             </a>
           </div>
@@ -70,10 +66,7 @@ $(function() {
             <div class="list-group-item" href="#">
               <img src="images/michael.jpg" class="img-rounded pull-left"/>
               <h4 class="list-group-item-heading" 
-                data-bind="text: vote"></h4>
-<!--
-                data-bind="html: $root.convertToStars(vote)"></h4>
--->
+                data-bind="html: $root.evidence.convertToStars(vote)"></h4>
               <p class="list-group-item-text" data-bind="text: reason"></p>
             </div>
           </div>
