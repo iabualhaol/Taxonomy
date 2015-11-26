@@ -22,7 +22,7 @@ var EvidenceViewModel = function(graph) {
 	      self.graph.selectedNode("");
 	      self.items([]);
 	    } else {
-	      self.selectedNode("");
+	      self.graph.selectedNode("");
 	      view.items([]);
 	    }
 	}
