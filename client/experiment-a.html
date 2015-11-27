@@ -28,7 +28,8 @@ $(function() {
     .createGraph(document.getElementById('graph'), {});
   taxi.evidence = new EvidenceViewModel(taxi.session, taxi.graph)
     .init();
-  taxi.config = new ConfigViewModel(taxi.graph);
+  taxi.config = new ConfigViewModel(taxi.graph)
+    .init();
   ko.applyBindings(taxi);
 });
   </script>
@@ -193,13 +194,6 @@ $(function() {
               </div> <!-- panel-header -->
               <div class="modal-body">
                 <form class="form-horizontal" onSubmit="return false;">
-                   <div class="form-group">
-                    <label class="col-xs-3">Arrows</label>
-                    <div class="col-xs-9">
-                      <label class="checkbox-inline"><input type="checkbox" value="" 
-                          data-bind="checked: config.edges.arrows.to">to</label>
-                    </div>
-                  </div>
                   <div class="form-group">
                     <label class="col-xs-3">Node shape</label>
                     <div class="col-xs-9">

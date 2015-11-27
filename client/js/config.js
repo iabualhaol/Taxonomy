@@ -8,11 +8,12 @@ var ConfigViewModel = function(graph) {
 	};
 
 	self.nodes = {};
-	self.nodes.font = ko.observable("12");
+	self.nodes.font = ko.observable("12 sans-serif");
 	self.nodes.shape = ko.observable("ellipse");
 	self.nodes.size = ko.observable(10);
 
 	self.init = function() {
+		self.setOptions();
 		return self;
 	}
 
@@ -25,10 +26,14 @@ var ConfigViewModel = function(graph) {
 		return {
 			edges: {
 				arrows: {
-					to: self.edges.arrows.to()
-				}
+					to: { 
+						enabled: self.edges.arrows.to(), 
+						scaleFactor: 0.0 
+					},
+				},
+				smooth: false,
 			},
-			nodes:  {
+			nodes: {
 				font: self.nodes.font(),
 				shape: self.nodes.shape(),
 				size: self.nodes.size(),
