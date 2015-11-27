@@ -27,7 +27,7 @@ var GraphViewModel = function(session) {
     	$.getJSON("http://localhost:8080/nodes", function(data) {
 		    self.nodes.update(data); 
 		    if (self.nodes.length > 0) {
-		    	// self.firstNode(false);
+		    	self.isEmpty(false);
 		    }
 		    self.graph.fit(); 
 		});

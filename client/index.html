@@ -68,10 +68,8 @@ $(function() {
               <h3 class="panel-title pull-left">Taxi > Experiment A</h3>
               <div class="pull-right">
                 <a class="btn btn-default" href="#"
-                  data-toggle="modal" data-target="#addNodeModal">
-   <!--
-                  data-bind="visible: canAddNode">
-  -->
+                  data-toggle="modal" data-target="#addNodeModal"
+                  data-bind="visible: graph.canAddNode">
                   <i class="fa fa-plus"></i>Node
                 </a>
               </div>
