@@ -11,7 +11,11 @@ var GraphViewModel = function(session) {
 	self.nodes = new vis.DataSet([]);
     self.edges = new vis.DataSet([]);
 
-   	self.createGraph = function(container, options) {
+ 	self.init = function() {
+		return self;
+	}
+
+  	self.createGraph = function(container, options) {
     	var data = {
 			nodes: self.nodes,
 			edges: self.edges
@@ -20,6 +24,11 @@ var GraphViewModel = function(session) {
     	self.loadNodes();
     	self.loadEdges();
     	return self;
+    }
+
+    self.setOptions = function(options) {
+    	console.log("graph.setOptions:", options);
+    	self.graph.setOptions(options);
     }
 
     self.loadNodes = function() {

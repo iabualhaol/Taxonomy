@@ -18,6 +18,7 @@
   <script type="text/javascript" src="js/session.js"></script>
   <script type="text/javascript" src="js/graph.js"></script>
   <script type="text/javascript" src="js/evidence.js"></script>
+  <script type="text/javascript" src="js/config.js"></script>
   <script>
 $(function() {
   var taxi = {};
@@ -27,6 +28,7 @@ $(function() {
     .createGraph(document.getElementById('graph'), {});
   taxi.evidence = new EvidenceViewModel(taxi.session, taxi.graph)
     .init();
+  taxi.config = new ConfigViewModel(taxi.graph);
   ko.applyBindings(taxi);
 });
   </script>
@@ -41,6 +43,12 @@ $(function() {
         </a>
       </div>
       <form class="navbar-form pull-right">
+        <div class="btn-group">
+          <a href="#" class="btn btn-sm"
+            data-toggle="modal" data-target="#editSettingsModal">
+            <i class="fa fa-gears"></i>
+          </a>
+        </div>
         <div class="form-group">
           <label><i class="fa fa-user"></i></label>
           <select class="form-control input-sm" 
@@ -173,6 +181,44 @@ $(function() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="editSettingsModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="panel-heading clearfix">
+                <h3 class="panel-heading-style pull-left">Setting</h3>
+              </div> <!-- panel-header -->
+              <div class="modal-body">
+                <form class="form-horizontal" onSubmit="return false;">
+                  <div class="form-group">
+                    <label class="col-xs-3">Node boundary</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-control" data-bind="" 
+                        placeholder="Enter ">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-xs-3">Font</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-control" data-bind="value: config.nodes.font" 
+                        placeholder="Enter font properties (size, face, color)">
+                    </div>
+                  </div>
+                </form>
+              </div> <!-- modal-body -->
+              <div class="panel-footer">
+                <button class="btn pull-left" data-dismiss="modal"
+                  data-bind="">
+                  <i class="fa fa-times"></i>Cancel
+                </button>
+                <button class="btn btn-primary pull-right" data-dismiss="modal"
+                  data-bind="click: config.setOptions">
+                  <i class="fa fa-check"></i>Save
+                </button>
+              </div> <!-- panel-footer -->
             </div>
           </div>
         </div>
