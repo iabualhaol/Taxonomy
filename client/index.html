@@ -15,14 +15,17 @@
   <script type='text/javascript' src='lib/knockout-3.2.0.js'></script> 
   <script type="text/javascript" src="lib/vis.js"></script>
 
+  <script type="text/javascript" src="js/session.js"></script>
   <script type="text/javascript" src="js/graph.js"></script>
   <script type="text/javascript" src="js/evidence.js"></script>
   <script>
 $(function() {
   var taxi = {};
-  taxi.graph = new GraphViewModel()
+  taxi.session = new SessionViewModel()
+    .init();
+  taxi.graph = new GraphViewModel(taxi.session)
     .createGraph(document.getElementById('graph'), {});
-  taxi.evidence = new EvidenceViewModel(taxi.graph)
+  taxi.evidence = new EvidenceViewModel(taxi.session, taxi.graph)
     .init();
   ko.applyBindings(taxi);
 });
@@ -31,7 +34,7 @@ $(function() {
 <body>
 
   <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
+    <div class="container">
       <div class="navbar-header">
         <a class="navbar-brand" href="#">
           <img src="images/taxi-small.png" width="20" height="20" alt="taxi (c)">
@@ -40,11 +43,15 @@ $(function() {
       <form class="navbar-form pull-right">
         <div class="form-group">
           <label><i class="fa fa-user"></i></label>
-          <select class="form-control input-sm">
+          <select class="form-control input-sm" 
+            data-bind="value: session.user, event: { change: session.saveProfile }">
             <option>Michael</option>
             <option>Ibrahim</option>
             <option>Ahmed</option>
             <option>Parisa</option>
+            <option>Mohamed</option>
+            <option>Mahmoud</option>
+            <option>Tony</option>
           </select>
         </div>
       </form>

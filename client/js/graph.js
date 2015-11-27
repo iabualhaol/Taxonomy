@@ -1,5 +1,6 @@
-var GraphViewModel = function() {
+var GraphViewModel = function(session) {
 	var self = this;
+	self.session = session;
 
    	self.selectedNode = ko.observable("");
    	self.newNodeLabel = ko.observable("");
@@ -9,10 +10,6 @@ var GraphViewModel = function() {
  	self.graph = {};
 	self.nodes = new vis.DataSet([]);
     self.edges = new vis.DataSet([]);
-
-    self.on = function(eventType, callback) {
-    	self.graph.on(eventType, callback);
-    }
 
    	self.createGraph = function(container, options) {
     	var data = {
@@ -52,7 +49,7 @@ var GraphViewModel = function() {
     	}
     });
 
-    self.addNewNode = function() {
+   self.addNewNode = function() {
       	console.log("Add node:", self.newNodeLabel());
       	$.post("http://localhost:8080/nodes",
       		{ label: self.newNodeLabel() }, function(data) {
@@ -83,5 +80,9 @@ var GraphViewModel = function() {
       		{ from: from, to: to }, function(data) {
         		self.edges.add(data);
       	}, "json");
+    }
+
+    self.on = function(eventType, callback) {
+    	self.graph.on(eventType, callback);
     }
 }

@@ -1,5 +1,6 @@
-var EvidenceViewModel = function(graph) {
+var EvidenceViewModel = function(session, graph) {
 	var self = this;
+	self.session = session;
 	self.graph = graph;
 
 	self.items = ko.observableArray([]);
