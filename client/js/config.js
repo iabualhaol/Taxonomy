@@ -2,8 +2,15 @@ var ConfigViewModel = function(graph) {
 	var self = this;
 	self.graph = graph;
 
+	self.edges = {};
+	self.edges.arrows = {
+		to: ko.observable(true) 
+	};
+
 	self.nodes = {};
-	self.nodes.font = ko.observable("");
+	self.nodes.font = ko.observable("12");
+	self.nodes.shape = ko.observable("ellipse");
+	self.nodes.size = ko.observable(10);
 
 	self.init = function() {
 		return self;
@@ -16,8 +23,15 @@ var ConfigViewModel = function(graph) {
 
 	self.options = function() {
 		return {
+			edges: {
+				arrows: {
+					to: self.edges.arrows.to()
+				}
+			},
 			nodes:  {
 				font: self.nodes.font(),
+				shape: self.nodes.shape(),
+				size: self.nodes.size(),
 			}		
 		};
 	}
