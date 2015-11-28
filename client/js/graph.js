@@ -65,6 +65,7 @@ var GraphViewModel = function(session) {
       		self.nodes.add(data);
         	if (self.selectedNode()) {
           		console.log("Add edge from:", self.selectedNode(), "to:", data.id);
+          		// console.log("Selected node:", self.graph.selectionHandler._getSelectedNode())
           		self.addNewEdge(self.selectedNode(), data.id);
         	}
         	self.graph.fit();

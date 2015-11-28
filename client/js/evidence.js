@@ -23,7 +23,7 @@ var EvidenceViewModel = function(session, graph) {
 		        	self.items(data);
 		    	});
 	    } else if (event.edges.length > 0) {
-	      console.log("clicked on an edge: " + params.edges[0]);
+	      console.log("clicked on an edge: " + event.edges[0]);
 	      self.graph.selectedNode("");
 	      self.items([]);
 	    } else {

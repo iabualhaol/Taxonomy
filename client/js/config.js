@@ -37,7 +37,7 @@ var ConfigViewModel = function(graph) {
 				font: self.nodes.font(),
 				shape: self.nodes.shape(),
 				size: self.nodes.size(),
-			}		
+			},
 		};
 	}
 
