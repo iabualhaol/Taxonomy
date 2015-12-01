@@ -23,6 +23,10 @@ var ConfigViewModel = function(graph) {
 	}
 
 	self.options = function() {
+		return self.defaultOptions();
+	}
+
+	self.customOptions = function() {
 		return {
 			edges: {
 				arrows: {
@@ -36,7 +40,7 @@ var ConfigViewModel = function(graph) {
 			nodes: {
 				font: self.nodes.font(),
 				shape: self.nodes.shape(),
-				size: self.nodes.size(),
+				size: self.nodes.size(), 
 			},
 		};
 	}
@@ -48,4 +52,48 @@ var ConfigViewModel = function(graph) {
 	self.loadProfile = function() {
 		self.user(localStorage["taxi.config.options"] || "");
 	}
+
+	self.defaultOptions = function() {
+		return {
+			interaction: {
+	          	navigationButtons: true,
+	          	keyboard: true
+	        },
+	 		physics:{
+			    enabled: true,
+			    hierarchicalRepulsion: {
+			      	centralGravity: 0,
+			      	springLength: 10,
+			      	springConstant: 0.1,
+			      	nodeDistance: 170,
+			      	damping: 0.1
+			    },
+			    maxVelocity: 50,
+			    minVelocity: 0.1
+			},
+			layout: {
+			    randomSeed: undefined,
+			    improvedLayout:true,
+			    hierarchical: {
+			      	enabled: true,
+			      	levelSeparation: 150,
+			      	direction: 'UD',
+			      	sortMethod: 'directed'
+			    }
+			},
+	 		nodes: {
+			    fixed: false,
+			    font: '12px sans-serif black',
+			    shape: 'box',
+	     		color: {
+			      	border: '#black',
+			      	background: '#13D59B',
+			      	highlight: {
+			        	border: '#black',
+			        	background: '#D2E5FF'
+			      	}
+	            }
+	    	}
+	    }
+  	}
 }

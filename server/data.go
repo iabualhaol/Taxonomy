@@ -45,7 +45,8 @@ func GetAllNodes() (Nodes) {
 
 func AddEdge(e Edge) (Edge) {
 	e.Id = strconv.Itoa(nextEdgeId)
-	e.Arrows = "To"
+	e.Arrows = "From"
+	e.Label = "is-a"
 	edges[e.From] = append(edges[e.From], e)
 	fmt.Println("Add edge: ", e)
 	nextEdgeId++
