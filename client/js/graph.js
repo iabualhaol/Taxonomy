@@ -84,6 +84,15 @@ var GraphViewModel = function(session) {
       	return self.selectedNode() || self.isEmpty();
     });
 
+    self.clusterNode = function() {
+    	console.log("Cluster node:", self.selectedNode());
+    	self.graph.clusterOutliers(self.selectedNode(), {
+    		clusterNodeProperties: { 
+    			borderWidth: 3 
+    		}
+    	});
+    }
+
     self.addNewEdge = function(from, to) {
       	console.log("New edge:", from, to);
       	$.post("http://localhost:8080/edges",

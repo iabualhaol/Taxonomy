@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Taxi > Experiment B</title>
+  <title>Taxi > Experiment C</title>
 
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootcards-desktop.min.css" rel="stylesheet">
@@ -80,6 +80,10 @@ $(function() {
                   data-toggle="modal" data-target="#addNodeModal"
                   data-bind="visible: graph.canAddNode">
                   <i class="fa fa-plus"></i>Node
+                </a>
+                <a class="btn btn-default" href="#"
+                  data-bind="visible: graph.selectedNode, click: graph.clusterNode">
+                  <i class="fa fa-search-minus"></i>Node
                 </a>
               </div>
             </div>
