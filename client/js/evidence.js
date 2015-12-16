@@ -18,7 +18,7 @@ var EvidenceViewModel = function(session, graph) {
     self.showEvidence = function(event) {
 	    if (event.nodes.length > 0) {
 		    self.graph.selectedNode(event.nodes[0]);
-		    $.getJSON("http://localhost:8080/nodes/" + self.graph.selectedNode() + "/evidence", 
+		    $.getJSON(self.session.baseUrl + "nodes/" + self.graph.selectedNode() + "/evidence", 
 		        function(data) {
 		        	self.items(data);
 		    	});
@@ -63,7 +63,7 @@ var EvidenceViewModel = function(session, graph) {
     self.createNodeEvidence = function() {
       	if (self.graph.selectedNode() != "") {
       		console.log("createNodeEvidence:", self.graph.selectedNode());
-        	$.post("http://localhost:8080/nodes/" + self.graph.selectedNode() + "/evidence",
+        	$.post(self.session.baseUrl + "nodes/" + self.graph.selectedNode() + "/evidence",
           		{ vote: self.vote(), reason: self.reason() }, function(data) {
           		self.items(data);
         	}, "json");

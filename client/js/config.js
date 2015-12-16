@@ -55,6 +55,33 @@ var ConfigViewModel = function(graph) {
 
 	self.defaultOptions = function() {
 		return {
+			layout: {
+			    improvedLayout: false,
+			    hierarchical: {
+			      	enabled: true,
+			      	levelSeparation: 150,
+			      	direction: 'UD',
+			      	sortMethod: 'directed'
+			    }
+			},
+	 		nodes: {
+			    fixed: false,
+			    font: '12px sans-serif black',
+			    shape: 'box',
+	     		color: {
+			      	border: '#black',
+			      	background: '#13D59B',
+			      	highlight: {
+			        	border: '#black',
+			        	background: '#D2E5FF'
+			      	}
+	            }
+	    	}
+	    }
+  	}
+
+  	self.defaultOptionsBackup = function() {
+		return {
 			interaction: {
 	          	navigationButtons: true,
 	          	keyboard: true
@@ -72,8 +99,7 @@ var ConfigViewModel = function(graph) {
 			    minVelocity: 0.1
 			},
 			layout: {
-			    randomSeed: undefined,
-			    improvedLayout:true,
+			    improvedLayout: true,
 			    hierarchical: {
 			      	enabled: true,
 			      	levelSeparation: 150,

@@ -2,9 +2,11 @@ var SessionViewModel = function() {
 	var self = this;
 
 	self.user = ko.observable("");
+	self.baseUrl = "";
 
-	self.init = function() {
+	self.init = function(host) {
 		console.log("init session");
+		self.baseUrl = "http://" + host + ":8080/";
 		self.loadProfile();
 		return self;
 	}

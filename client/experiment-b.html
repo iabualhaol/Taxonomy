@@ -23,7 +23,7 @@
 $(function() {
   var taxi = {};
   taxi.session = new SessionViewModel()
-    .init();
+    .init("localhost");
   taxi.graph = new GraphViewModel(taxi.session)
     .createGraph(document.getElementById('graph'), {});
   taxi.evidence = new EvidenceViewModel(taxi.session, taxi.graph)

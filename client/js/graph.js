@@ -2,14 +2,14 @@ var GraphViewModel = function(session) {
 	var self = this;
 	self.session = session;
 
-   	self.selectedNode = ko.observable("");
-   	self.newNodeLabel = ko.observable("");
+  self.selectedNode = ko.observable("");
+  self.newNodeLabel = ko.observable("");
 
-   	self.isEmpty = ko.observable(true);
+  self.isEmpty = ko.observable(true);
 
  	self.graph = {};
 	self.nodes = new vis.DataSet([]);
-    self.edges = new vis.DataSet([]);
+  self.edges = new vis.DataSet([]);
 
  	self.init = function() {
 		return self;
@@ -17,8 +17,8 @@ var GraphViewModel = function(session) {
 
   	self.createGraph = function(container, options) {
     	var data = {
-			nodes: self.nodes,
-			edges: self.edges
+  			nodes: self.nodes,
+  			edges: self.edges
 	  	};
 	  	self.graph = new vis.Network(container, data, options);
     	self.loadNodes();
@@ -33,24 +33,24 @@ var GraphViewModel = function(session) {
 
     self.loadNodes = function() {
     	console.log('loadNodes');
-    	$.getJSON("http://localhost:8080/nodes", function(data) {
-		    self.nodes.update(data); 
-		    if (self.nodes.length > 0) {
-		    	self.isEmpty(false);
-		    }
-		    self.graph.fit(); 
-		});
+    	$.getJSON(self.session.baseUrl + "nodes", function(data) {
+  	    self.nodes.update(data); 
+  	    if (self.nodes.length > 0) {
+  	    	self.isEmpty(false);
+  	    }
+  	    self.graph.fit(); 
+  		});
     }
 
     self.loadEdges = function() {
     	console.log('loadEdges');
-    	$.getJSON("http://localhost:8080/edges", function(data) {
+    	$.getJSON(self.session.baseUrl + "edges", function(data) {
 		    self.edges.update(data);  
 		    self.graph.fit();
-		});
+		  });
     }
 
-     self.selectedNodeLabel = ko.computed(function() {
+    self.selectedNodeLabel = ko.computed(function() {
     	if (self.selectedNode()) {
     		return self.nodes.get(self.selectedNode()).label;
     	} else {
@@ -60,7 +60,7 @@ var GraphViewModel = function(session) {
 
    self.addNewNode = function() {
       	console.log("Add node:", self.newNodeLabel());
-      	$.post("http://localhost:8080/nodes",
+      	$.post(self.session.baseUrl + "nodes",
       		{ label: self.newNodeLabel() }, function(data) {
       		self.nodes.add(data);
         	if (self.selectedNode()) {
@@ -77,7 +77,7 @@ var GraphViewModel = function(session) {
     }
 
     self.clearNewNode = function() {
-        self.newNodeLabel("")
+      self.newNodeLabel("")
     }
 
     self.canAddNode = ko.computed(function() {
@@ -94,11 +94,11 @@ var GraphViewModel = function(session) {
     }
 
     self.addNewEdge = function(from, to) {
-      	console.log("New edge:", from, to);
-      	$.post("http://localhost:8080/edges",
-      		{ from: from, to: to }, function(data) {
-        		self.edges.add(data);
-      	}, "json");
+    	console.log("New edge:", from, to);
+    	$.post(self.session.baseUrl + "edges",
+    		{ from: from, to: to }, function(data) {
+      		self.edges.add(data);
+    	}, "json");
     }
 
     self.on = function(eventType, callback) {
