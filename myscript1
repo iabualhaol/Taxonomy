@@ -1,0 +1,4 @@
+cd client
+ifconfig |grep inet
+bash http.sh
+echo "---------------- Start HTTP server ------------"

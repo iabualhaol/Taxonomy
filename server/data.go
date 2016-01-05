@@ -4,6 +4,7 @@ import "fmt"
 import "strconv"
 
 // map of node ids -> nodes
+// Example--> http://www.dotnetperls.com/map-go
 var nodes map[string]Node
 var nextNodeId int = 1
 

@@ -1,0 +1,12 @@
+#cd "/Uers/iabualhaol/Google Drive/VENUSCybersecurity"
+echo " --------- Start go Server -------------------"
+source ~/.profile
+cd server/
+go run *.go
+
+#cd ..
+#cd client
+#ifconfig |grep inet
+#bash http.sh
+#echo "---------------- Start HTTP server ------------"
+

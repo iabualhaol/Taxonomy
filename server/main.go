@@ -2,7 +2,9 @@ package main
 
 import "log"
 import "net/http"
-import "github.com/gorilla/mux"
+//import "github.com/gorilla/mux"
+import "./gurilla-mux"
+//A powerful URL router and dispatcher for golang. http://www.gorillatoolkit.org/pkg/mux
 
 func InitRouter() {
 	router := mux.NewRouter().StrictSlash(true)
